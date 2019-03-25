@@ -1,0 +1,62 @@
+@import "../../style.less";
+
+.page_layout {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    .sider {
+        background: #fff;
+        .menu {
+            .menu_item {
+                height: 100px;
+                text-align: center;
+                .menu_item_text {
+                    font-size: 14px;
+                    line-height: 30px;
+                }
+                .menu_item_icon {
+                    font-size: 36px;
+                    margin-right: 0px;
+                    margin-top: 18px
+                }
+            }
+            .menu_item::after {
+                left: 0;
+                right: auto;
+            }
+            .ant-menu-item-selected {
+                background: #fff;
+            }
+        }
+    }
+
+    .header {
+        height: 80px;
+        padding: 0px;
+        background: #fff;
+        .logo {
+            display: inline-block;
+            width: 104px;
+            height: 100%;
+            background: @base_color1;
+            line-height: 80px;
+            text-align: center
+        }
+        .avatar {
+            float: right;
+            cursor: pointer;
+            margin-right: 30px;
+            margin-top: 20px;
+        }
+    }
+
+    .contant {
+        background: #f4f4f4;
+        min-height: 100%;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-bottom: 20px;
+    }
+}
