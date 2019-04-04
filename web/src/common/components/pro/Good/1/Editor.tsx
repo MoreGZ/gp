@@ -1,7 +1,6 @@
 import * as React from 'react'
-import Module from './Module'
-import EditDrawer from './EditDrawer'
-import defaultmoduleInfo from '../defaultValue'
+import Module from '.'
+import EditDrawer from '../EditDrawer'
 
 export default class Container extends React.Component<any, any>{
     state = {
@@ -21,19 +20,17 @@ export default class Container extends React.Component<any, any>{
     }
     
     render() {
-        const { status, onDelete, onInfoChange, moduleInfo=defaultmoduleInfo, goodList, voucherList} = this.props;
+        const { onDelete, onInfoChange, moduleInfo, goodList, voucherList} = this.props;
         const { isShowDrawer } = this.state
         
         return (
             <React.Fragment>
-                <Module
-                    status={status}
-                    moduleInfo={moduleInfo}
-                    onClick={this.handleCickModule.bind(this)}
-                />
-            {
-                status == 'edit' 
-                ? <EditDrawer
+                <div onClick={this.handleCickModule.bind(this)}>
+                    <Module
+                        moduleInfo={moduleInfo}
+                    />
+                </div>
+                <EditDrawer
                     visible={isShowDrawer}
                     moduleInfo={moduleInfo}
                     onInfoChange={onInfoChange}
@@ -42,8 +39,6 @@ export default class Container extends React.Component<any, any>{
                     goodList={goodList}
                     voucherList={voucherList}
                 />
-                : null
-            }
             </React.Fragment>
         )
     }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Menu, Upload, Drawer, Icon, Form, Input, Button, Popconfirm, message, Select } from 'antd'
-import ColorSelect from '../../ColorSelet/index'
-import '../index.less'
+import ColorSelect from '../ColorSelet/index'
+import './index.less'
 import * as _ from 'lodash'
 
 const { SubMenu } = Menu;
@@ -10,14 +10,13 @@ const { Option } = Select;
 const { Item: FormItem } = Form;
 export default class EditDrawer extends React.Component<any, any> {
 
-    handleSelectBindGood(value: any) {
-        const { goodList, onInfoChange } = this.props
+    // handleSelectBindGood(value: any) {
+    //     const { goodList, onInfoChange } = this.props
         
-        const good = _.find(goodList, (good) => good.id == value)
+    //     const good = _.find(goodList, (good) => good.id == value)
 
-        onInfoChange(`bindGood`, _.extend({}, good))
-        // onInfoChange(`price`, good.price)
-    }
+    //     onInfoChange(`bindGood`, _.extend({}, good))
+    // }
 
     handleUploadChange(info: any) {
         const { onInfoChange } = this.props
@@ -66,7 +65,7 @@ export default class EditDrawer extends React.Component<any, any> {
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="商品标题" style={{marginBottom: '5px'}}>
                         <Input 
-                            value={_.get(moduleInfo, `name`, '')} 
+                            value={_.get(moduleInfo, `values.name`, '')} 
                             onChange={(e: any) => {onInfoChange(`name`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
@@ -76,7 +75,7 @@ export default class EditDrawer extends React.Component<any, any> {
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="商品描述" style={{marginBottom: '5px'}}>
                         <TextArea 
-                            value={_.get(moduleInfo, `desc`, '')} 
+                            value={_.get(moduleInfo, `values.desc`, '')} 
                             onChange={(e: any) => {onInfoChange(`desc`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
@@ -86,7 +85,7 @@ export default class EditDrawer extends React.Component<any, any> {
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="原价" style={{marginBottom: '5px'}}>
                         <Input 
-                            value={_.get(moduleInfo, `price`, '')} 
+                            value={_.get(moduleInfo, `values.price`, '')} 
                             onChange={(e: any) => {onInfoChange(`price`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
@@ -96,7 +95,7 @@ export default class EditDrawer extends React.Component<any, any> {
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="抢购价" style={{marginBottom: '5px'}}>
                         <Input 
-                            value={_.get(moduleInfo, `activityPrice`, '')} 
+                            value={_.get(moduleInfo, `values.activityPrice`, '')} 
                             onChange={(e: any) => {onInfoChange(`activityPrice`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
@@ -107,7 +106,7 @@ export default class EditDrawer extends React.Component<any, any> {
                     <FormItem label="按钮颜色" style={{marginBottom: '5px'}}>
                         <span style={{fontSize: '12px'}}>背景</span>
                         <ColorSelect 
-                            value={_.get(moduleInfo, `buttonColor`, '')} 
+                            value={_.get(moduleInfo, `values.buttonColor`, '')} 
                             onChange={(e: any) => {onInfoChange(`buttonColor`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
@@ -118,25 +117,25 @@ export default class EditDrawer extends React.Component<any, any> {
                     <FormItem label="字体颜色" style={{marginBottom: '5px'}}>
                         <span style={{fontSize: '12px'}}>标题</span>
                         <ColorSelect 
-                            value={_.get(moduleInfo, `nameColor`, '')} 
+                            value={_.get(moduleInfo, `values.nameColor`, '')} 
                             onChange={(e: any) => {onInfoChange(`nameColor`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
                         <span style={{fontSize: '12px'}}>描述</span>
                         <ColorSelect 
-                            value={_.get(moduleInfo, `descColor`, '')} 
+                            value={_.get(moduleInfo, `values.descColor`, '')} 
                             onChange={(e: any) => {onInfoChange(`descColor`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
                         <span style={{fontSize: '12px'}}>原价&抢购价</span>
                         <ColorSelect 
-                            value={_.get(moduleInfo, `priceColor`, '')} 
+                            value={_.get(moduleInfo, `values.priceColor`, '')} 
                             onChange={(e: any) => {onInfoChange(`priceColor`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
                         <span style={{fontSize: '12px'}}>按钮</span>
                         <ColorSelect 
-                            value={_.get(moduleInfo, `buttonTextColor`, '')} 
+                            value={_.get(moduleInfo, `values.buttonTextColor`, '')} 
                             onChange={(e: any) => {onInfoChange(`buttonTextColor`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
@@ -146,13 +145,13 @@ export default class EditDrawer extends React.Component<any, any> {
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="背景颜色" style={{marginBottom: '5px'}}>
                         <ColorSelect 
-                            value={_.get(moduleInfo, `bcColor`, '')} 
+                            value={_.get(moduleInfo, `values.bcColor`, '')} 
                             onChange={(e: any) => {onInfoChange(`bcColor`, e.target.value)}}
                             style={{ display: 'inline-block', width: '216px' }}
                         />
                     </FormItem>
                 </div>
-                
+{/*                 
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="绑定商品" style={{marginBottom: '5px'}}>
                         <Select
@@ -167,7 +166,7 @@ export default class EditDrawer extends React.Component<any, any> {
                         }
                         </Select>
                     </FormItem>
-                </div>
+                </div> */}
 
                 <div style={{textAlign: 'center', marginTop: '20px'}}>
                     <Button type="danger" style={{width: '216px'}} onClick={onDelete}>删除</Button>
