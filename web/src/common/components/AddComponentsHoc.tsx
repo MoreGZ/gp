@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as _ from 'lodash'
 
-export default (components: any) => {
+export default (components: any, type='edit') => {
     let menu = [
         {
             title: "Banner",
@@ -25,9 +25,14 @@ export default (components: any) => {
         },
     ], Components = new Array
     _.forEach(components, (component, index) => {
-        _.find(menu, (menuItem, index) => menuItem.key === component.config.type)
-            .subMenu.push(component.MenuItem)
-        Components[component.config.version] = component.Editor
+        if(type === 'edit') {
+            _.find(menu, (menuItem, index) => menuItem.key === component.config.type)
+                .subMenu.push(component.MenuItem)
+            Components[component.config.version] = component.Editor
+        } else if(type === 'act'){
+            Components[component.config.version] = component.Module
+        }
+        
     })
 
     return (Editor: any) => {

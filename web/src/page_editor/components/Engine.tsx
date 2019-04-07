@@ -6,7 +6,7 @@ import AddModuleDraw from './AddModuleDraw'
 import EditNull from '@common/components/pro/Null'
 import ProHeader from '@common/components/ProHeader'
 import ProFooter from '@common/components/ProFooter'
-import AddComponentsHoc from './AddComponentsHoc'
+import AddComponentsHoc from '@common/components/AddComponentsHoc'
 import * as Voucher1 from '@common/components/pro/Voucher/1'
 import * as Good1 from '@common/components/pro/Good/1'
 import * as Banner from '@common/components/pro/Banner'
@@ -28,10 +28,6 @@ class Engine extends React.Component<any, any> {
             title: "Banner",
             key: 'banner',
             subMenu: [
-                // {
-                //     contentImgLink: 'http://localhost:7003/img/pro/banner1.png',
-                //     key: 'banner_1'
-                // }
             ]
         },
         {
@@ -253,5 +249,5 @@ class Engine extends React.Component<any, any> {
 export default AddComponentsHoc([
     Voucher1,
     Good1,
-    Banner
+    // Banner
 ])(Engine)

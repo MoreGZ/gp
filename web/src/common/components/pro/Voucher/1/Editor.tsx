@@ -26,9 +26,7 @@ export default class Container extends React.Component<any, any>{
         return (
             <React.Fragment>
                 <div onClick={this.handleCickModule.bind(this)}>
-                    <Module
-                    moduleInfo={moduleInfo}
-                    />
+                    <Module moduleInfo={moduleInfo} />
                 </div>
                 <EditDrawer
                 visible={isShowDrawer}

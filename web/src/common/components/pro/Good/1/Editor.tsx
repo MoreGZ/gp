@@ -26,18 +26,16 @@ export default class Container extends React.Component<any, any>{
         return (
             <React.Fragment>
                 <div onClick={this.handleCickModule.bind(this)}>
-                    <Module
-                        moduleInfo={moduleInfo}
-                    />
+                    <Module moduleInfo={moduleInfo} />
                 </div>
                 <EditDrawer
-                    visible={isShowDrawer}
-                    moduleInfo={moduleInfo}
-                    onInfoChange={onInfoChange}
-                    onDelete={onDelete}
-                    onClose={this.handleCloseDrawer.bind(this)}
-                    goodList={goodList}
-                    voucherList={voucherList}
+                visible={isShowDrawer}
+                moduleInfo={moduleInfo}
+                onInfoChange={onInfoChange}
+                onDelete={onDelete}
+                onClose={this.handleCloseDrawer.bind(this)}
+                goodList={goodList}
+                voucherList={voucherList}
                 />
             </React.Fragment>
         )

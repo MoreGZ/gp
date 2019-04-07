@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Menu, Upload, Drawer, Icon, Form, Input, Button, Popconfirm, message, Select } from 'antd'
-import ColorSelect from '../ColorSelet/index'
+import ColorSelect from '../../ColorSelet'
 import './index.less'
 import * as _ from 'lodash'
 
@@ -151,7 +151,7 @@ export default class EditDrawer extends React.Component<any, any> {
                         />
                     </FormItem>
                 </div>
-{/*                 
+                {/*                 
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label="绑定商品" style={{marginBottom: '5px'}}>
                         <Select
