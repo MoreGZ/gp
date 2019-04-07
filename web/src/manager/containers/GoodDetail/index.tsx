@@ -4,7 +4,7 @@ import { Input, Button, Table, Card, Form, Select, Icon, Modal, Popconfirm, mess
 import { GoodApi } from '../../services/api'
 import './style.less'
 import * as _ from 'lodash'
-import BaseInfoForm from '../../components/AddGoodDialog/BaseInfoForm'
+import BaseInfoForm from '../../components/Good/BaseInfoForm'
 import { withRouter } from 'react-router-dom'
 
 const FormItem = Form.Item

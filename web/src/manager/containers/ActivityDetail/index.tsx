@@ -2,10 +2,10 @@ import * as React from "react"
 import { hot } from 'react-hot-loader'
 import { Input, Button, Table, Card, Form, Select, Icon, Modal, Upload, Tabs, message } from 'antd'
 import { ActivityApi } from '../../services/api'
-import GoodContainer from '../Good'
 import AddActivityDialog from '../../components/AddActivityDialog'
-import VoucherList from '../../components/VoucherList'
-import PageList from '../../components/PageList'
+import GoodTabPane from '../../components/Good/GoodTabPane'
+import VoucherTabPane from '../../components/Voucher/VoucherTabPane'
+import PageTabPane from '../../components/Page/PageTabPane'
 import * as _ from 'lodash'
 import { withRouter } from 'react-router-dom'
 import * as moment from 'moment'
@@ -181,13 +181,13 @@ class ActivityDetail extends React.Component<any, any> {
                     <Card title={<span><Icon type='caret-right' className='title_arrow'></Icon> 活动配置</span>}>
                         <Tabs defaultActiveKey="1" >
                             <TabPane tab="活动商品" key="1">
-                                <GoodContainer></GoodContainer>
+                                <GoodTabPane></GoodTabPane>
                             </TabPane>
                             <TabPane tab="活动代金券" key="2">
-                                <VoucherList></VoucherList>
+                                <VoucherTabPane></VoucherTabPane>
                             </TabPane>
                             <TabPane tab="活动页面" key="3">
-                                <PageList></PageList>
+                                <PageTabPane></PageTabPane>
                             </TabPane>
                         </Tabs>
                     </Card>

@@ -2,8 +2,9 @@ import * as React from "react"
 import { hot } from 'react-hot-loader'
 import { Input, Button, Table, Card, Form, Select, Icon, Popconfirm, Upload, Row, Col, Tag, message, Tooltip, Spin } from 'antd'
 import { GoodApi } from '../../services/api'
-import AddGoodDialog from '../../components/AddGoodDialog'
-import GoodFilter from '../../components/Filter/good'
+import AddGoodDialog from '../../components/Good/AddGoodDialog'
+import GoodFilter from '../../components/Good/GoodFilter'
+import GoodList from '../../components/Good/GoodList'
 import {Link} from 'react-router-dom'
 import './style.less'
 import * as _ from 'lodash'
@@ -34,49 +35,6 @@ export default class extends React.Component<any, any> {
             }
         }
     }
-
-    columns = [{
-        title: '商品id',
-        dataIndex: 'id',
-        key: 'id',
-        render: (value: any, record: any, index: number) => {
-            return <Link to={`/good/detail/${value}`}>{value}</Link>
-        }
-        }, {
-        title: '商品名称',
-        dataIndex: 'name',
-        key: 'name',
-        }, {
-        title: '商品类别',
-        dataIndex: 'category',
-        key: 'category',
-        }, {
-        title: '商品配置',
-        dataIndex: 'config',
-        key: 'config',
-        render(value: any, record: any, index: number) {
-            
-            return _.map(value, (item, index) => {
-                return (
-                    <Tooltip placement="topLeft" title={item.value.join(', ')}>
-                        <Tag>{item.name}</Tag>
-                    </Tooltip>
-                )
-            })
-        }
-        }, {
-        title: '操作',
-        dataIndex: 'operation',
-        key: 'operation',
-        render: (value: any, record: any, index: number) => {
-            return <span>
-                <Popconfirm title='确定删除此商品？' onConfirm={() => {this.deleteGood(record.id)}} okText="删除" cancelText="取消">
-                    <a href="javascripts:;" className='mr15'>删除</a>
-                </Popconfirm>
-                <Link to={`/good/detail/${record.id}`}>详情</Link>
-            </span>
-        }
-    }];
 
     fetchGoodList() {
         const { filterFields, pagination } = this.state
@@ -310,12 +268,12 @@ export default class extends React.Component<any, any> {
                 <div className="container_body">
                     <Card title={<span>商品列表</span>}>
                         <Spin spinning={isLoading}>
-                            <Table 
-                            columns={this.columns} 
+                            <GoodList
                             pagination={pagination}
                             onChange={this.handleChangePage.bind(this)}
-                            dataSource={listData}>
-                            </Table>
+                            dataSource={listData}
+                            onDelete={this.deleteGood.bind(this)}>
+                            </GoodList>
                         </Spin>
                     </Card>
                 </div>

@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader'
 import { Input, Button, Table, Card, 
     Form, Select, Icon, Modal, Radio, Row, Col, Tag, message, Popconfirm, InputNumber, Switch, DatePicker  } from 'antd'
 import { GoodApi } from '../../services/api'
-import AddGoodDialog from '../../components/AddGoodDialog'
+import AddGoodDialog from '../Good/AddGoodDialog'
 import './style.less'
 import * as _ from 'lodash'
 
