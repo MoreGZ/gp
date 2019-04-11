@@ -49,7 +49,7 @@ app.use(koaStatic(
 ))
 
 // 配置服务端模板渲染引擎中间件
-app.use(koaViews(path.join(__dirname,"views"), {
+app.use(koaViews(path.join(__dirname, "views"), {
     map: {
         html: 'ejs'
     }
