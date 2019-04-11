@@ -7,38 +7,15 @@ import ProFooter from '@common/components/ProFooter'
 import AddComponentsHoc from '@common/components/AddComponentsHoc'
 import * as Voucher1 from '@common/components/pro/Voucher/1'
 import * as Good1 from '@common/components/pro/Good/1'
-import { PageApi } from '../services/api'
+import { PageApi } from '../../services/api'
 
 class Engine extends React.Component<any, any> {
     state = {
         voucherList: new Array(),
         goodList: new Array(),
-        pageConfig: new Array()
     }
 
-    getPageConfig() {
-        this.setState({
-            isLoading: true
-        }, () => {
-            PageApi.getPageConfig({
-                page_id: this.props.match.params.id
-            }).then(res => {
-                const { data: {config} } = res;
-                this.setState({
-                    pageConfig: config
-                })
-            }).catch((error) => {
-                message.error(error.message)
-                throw error
-            }).finally(() => {
-                this.setState({
-                    isLoading: false
-                })
-            })
-        })
-    }
-
-    _renderModule(moduleConfig: any, index: number) {
+    _renderModule(moduleConfig: any, index: number | string) {
         const { goodList, voucherList } = this.state
         const { Components } = this.props
         
@@ -58,12 +35,8 @@ class Engine extends React.Component<any, any> {
         )
     }
 
-    componentDidMount() {
-        this.getPageConfig()
-    }
-
     render() { 
-        const { pageConfig } = this.state
+        const { pageConfig } = this.props
 
         console.log(pageConfig, 'pageConfig')
 
@@ -82,4 +55,4 @@ class Engine extends React.Component<any, any> {
 export default AddComponentsHoc([
     Voucher1,
     Good1,
-], 'act')(withRouter(Engine))
+], 'act')(Engine)

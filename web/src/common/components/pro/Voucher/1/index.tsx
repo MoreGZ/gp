@@ -3,6 +3,7 @@ import '../index.less'
 import { Menu } from 'antd'
 import * as _ from 'lodash'
 import config from './config'
+import util from '@common/libs/util'
 
 // export interface ModuleProps {
 //     key: number | string,
@@ -12,7 +13,7 @@ import config from './config'
 export class Module extends React.Component<any, any>{
     render () {
         const { moduleInfo } = this.props
-        console.log(this.props)
+
         return (
             <div className={'module_wrapper'}>
                 <div className='voucher_module_content'>
@@ -59,7 +60,7 @@ export const MenuItem = (props: any) => {
         style={{height: 'auto', paddingLeft: '20px', position: 'relative', right: '24px', textAlign: 'center'}} 
         className='img-menu-item'
         {...props}
-        onClick={() => { onClick( _.extend({}, config) ) }}
+        onClick={() => { onClick( util.deepClone(config) ) }}
         >
             <img src='http://localhost:7003/img/pro/voucher1.png' width='150'/>
         </Menu.Item>

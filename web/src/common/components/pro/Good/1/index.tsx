@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Menu } from 'antd'
 import * as _ from 'lodash'
 import config from './config'
+import util from '@common/libs/util'
 import '../index.less'
 
 export class Module extends React.Component<any, any> {
@@ -74,7 +75,7 @@ export const MenuItem = (props: any) => {
         style={{height: 'auto', paddingLeft: '20px', position: 'relative', right: '24px', textAlign: 'center'}} 
         className='img-menu-item'
         {...props}
-        onClick={() => { onClick( _.extend({}, config) ) }}
+        onClick={() => { onClick( util.deepClone(config) ) }}
         >
             <img src='http://localhost:7003/img/pro/good1.png' width='150'/>
         </Menu.Item>

@@ -1,8 +1,7 @@
 import * as React from "react"
 import { hot } from 'react-hot-loader'
-import { Route, Redirect, Switch } from 'react-router-dom'
-import Engine from './components/Engine'
-import './style.less'
+import { Switch, Route, Redirect} from 'react-router-dom'
+import Engine from './containers/Pro'
 
 @hot(module)
 export default class extends React.Component<any, any> {

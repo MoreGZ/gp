@@ -2,11 +2,12 @@ import * as React from 'react'
 import { Layout, Menu, Icon, Drawer, message } from 'antd';
 import * as _ from 'lodash'
 import { withRouter } from 'react-router-dom'
-import AddModuleDraw from './AddModuleDraw'
+import AddModuleDraw from '../components/AddModuleDraw'
 import EditNull from '@common/components/pro/Null'
 import ProHeader from '@common/components/ProHeader'
 import ProFooter from '@common/components/ProFooter'
 import AddComponentsHoc from '@common/components/AddComponentsHoc'
+import util from '@common/libs/util'
 
 import * as Voucher1 from '@common/components/pro/Voucher/1'
 import * as Good1 from '@common/components/pro/Good/1'
@@ -23,8 +24,8 @@ class Engine extends React.Component<any, any> {
         isLoading: false,
         voucherList: new Array(),
         goodList: new Array(),
-        editHistory: [ new Array() ],
-        historyIndex: 0,
+        editHistory: new Array(),
+        historyIndex: -1,
         pageConfig: new Array(),
     }
 
@@ -38,9 +39,15 @@ class Engine extends React.Component<any, any> {
         {text: '发布', key: 'public', icon: <Icon type="upload" />},
         {text: '下架', key: 'offline', icon: <Icon type="arrow-down" />}
     ]
+    
+    t: NodeJS.Timeout;
 
     componentDidMount() {
         this.getPageConfigEdit()
+
+        this.t = setInterval(() => {
+            this.saveEditConfig('自动保存成功')
+        }, 20000)
     }
 
     getPageConfigEdit() {
@@ -52,7 +59,9 @@ class Engine extends React.Component<any, any> {
             }).then(res => {
                 const { data: {config} } = res;
                 this.setState({
-                    pageConfig: config
+                    pageConfig: config,
+                    editHistory: [ util.deepClone(config) ],
+                    historyIndex: 0
                 })
             }).catch((error) => {
                 message.error(error.message)
@@ -167,28 +176,44 @@ class Engine extends React.Component<any, any> {
     }
 
     handleReturnBack() {
+        if( this.state.historyIndex < 0 ) { //没有编辑历史，无法进行撤回操作
+            return 
+        }
+
         this.setState((preState: any) => {
             let { historyIndex, editHistory } = preState
 
-            historyIndex = historyIndex > 0 ? historyIndex-- : 0
+            historyIndex = historyIndex > 0 ? historyIndex-1 : 0
 
             return {
                 historyIndex,
-                pageConfig: editHistory[historyIndex]
+                pageConfig: util.deepClone(editHistory[historyIndex])
             }
+        }, () => {
+            console.log(this.state.editHistory)
+            console.log(this.state.pageConfig)
+            console.log(this.state.historyIndex)
         })
     }
 
     handleForward() {
+        if( this.state.historyIndex < 0 ) {  //没有编辑历史，无法进行撤回操作
+            return 
+        }
+
         this.setState((preState: any) => {
             let { historyIndex, editHistory } = preState
 
-            historyIndex = historyIndex < editHistory.length-1 ? historyIndex++ : editHistory.length-1
+            historyIndex = historyIndex < editHistory.length-1 ? historyIndex+1 : editHistory.length-1
 
             return {
                 historyIndex,
-                pageConfig: editHistory[historyIndex]
+                pageConfig: util.deepClone(editHistory[historyIndex])
             }
+        }, () => {
+            console.log(this.state.editHistory)
+            console.log(this.state.pageConfig)
+            console.log(this.state.historyIndex)
         })
     }
 
@@ -196,7 +221,8 @@ class Engine extends React.Component<any, any> {
         this.setState((preState: any) => {
             const { pageConfig } = preState
 
-            this.saveHistory({...pageConfig})
+            
+            this.saveHistory([])
             return {
                 pageConfig: new Array()
             }
@@ -208,19 +234,26 @@ class Engine extends React.Component<any, any> {
     }
 
     saveHistory(config: any) {
+        const cloneConfig = util.deepClone(config)
+
         this.setState((preState: any) => {
             let { historyIndex, editHistory } = preState
 
-            if(historyIndex < editHistory.length-1 && historyIndex>0) { // 进行了后退操作
+            if(historyIndex < editHistory.length-1 && historyIndex>=0) { // 进行了后退操作
                 editHistory = editHistory.slice(0, historyIndex+1)
             }
-            editHistory.push(config)
+
+            editHistory.push(cloneConfig)
             historyIndex++
 
             return {
                 editHistory,
                 historyIndex
             }
+        }, () => {
+            console.log(this.state.editHistory)
+            console.log(this.state.pageConfig)
+            console.log(this.state.historyIndex)
         })
     }
 
@@ -231,8 +264,8 @@ class Engine extends React.Component<any, any> {
         // console.log(value)
         // console.log(pageConfig)
 
-        this.saveHistory({...pageConfig})
         _.set(pageConfig, `[${moduleIndex}]${keyPath}`, value)
+        this.saveHistory(pageConfig)
 
         this.setState({
             pageConfig
@@ -244,23 +277,21 @@ class Engine extends React.Component<any, any> {
             let { pageConfig } = preState;
             
             if(moduleConfig) {
-                this.saveHistory({...pageConfig})
                 pageConfig.push(moduleConfig)
+                this.saveHistory(pageConfig)
             }else {
                 message.error('组件不存在')
             }
             
             return {pageConfig}
-        }, () => {
-            console.log(this.state.pageConfig);
         })
     }
 
     handleDeleteModule(moduleIndex: number) {
         const { pageConfig } = this.state
 
-        this.saveHistory({...pageConfig})
         pageConfig.splice(moduleIndex, 1);
+        this.saveHistory(pageConfig)
 
         this.setState({
             pageConfig
