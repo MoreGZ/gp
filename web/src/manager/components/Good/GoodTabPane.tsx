@@ -1,16 +1,18 @@
 import * as React from "react"
 import { hot } from 'react-hot-loader'
 import { Input, Button, Table, Card, Form, Select, Icon, Popconfirm, Upload, Row, Col, Tag, message, Tooltip, Spin, Modal } from 'antd'
-import { GoodApi } from '../../services/api'
+import { GoodApi, ActivityApi } from '../../services/api'
 import GoodFilter from './GoodFilter'
 import GoodList from './GoodList'
+import SelectGoodDialog from './SelectGoodDialog'
 import './style.less'
 import * as _ from 'lodash'
+import { withRouter } from "react-router";
 
 const FormItem = Form.Item
 
 @hot(module)
-export default class extends React.Component<any, any> {
+class GoodTabPane extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
 
@@ -31,10 +33,12 @@ export default class extends React.Component<any, any> {
 
     fetchGoodList() {
         const { filterFields, pagination } = this.state
+
         const data = {
             ..._.mapValues(filterFields, (value) => value.value),
             page_index: pagination.current,
-            page_size: pagination.pageSize
+            page_size: pagination.pageSize,
+            activity_id: this.props.match.params.activity_id
         }
 
         this.setState({
@@ -81,7 +85,24 @@ export default class extends React.Component<any, any> {
     }
 
     deleteGood(good_id: number) {
-        
+        this.setState({
+            isLoading: true
+        }, () => {
+            ActivityApi.removeGoodFromActivity({
+                good_id: good_id,
+                activity_id: +this.props.match.params.activity_id
+            }).then(res => {
+                message.success('移除商品成功')
+                this.fetchGoodList()
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
     }
 
     handleFilterChange(fields: any) {
@@ -109,8 +130,25 @@ export default class extends React.Component<any, any> {
         })
     }
 
-    handleDialogSubmit() {
-        
+    handleDialogSubmit(selectedRowKeys: []) {
+        this.setState({
+            isLoading: true,
+            isDialogVisible: false
+        }, () => {
+            ActivityApi.addGoodToActivity({
+                good_ids: selectedRowKeys,
+                activity_id: +this.props.match.params.activity_id
+            }).then((res) => {
+                message.success('添加成功')
+                this.fetchGoodList()
+            }).catch((err) => {
+                message.error(`添加失败：${err.message}`)
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
     }
 
     componentDidMount() {
@@ -120,7 +158,9 @@ export default class extends React.Component<any, any> {
 
     render() {
         const { pagination, listData, isLoading, filterFields, category, isDialogVisible } = this.state;
-        
+        const disableRowKeys = _.map(listData, (item) => item.id)
+        // console.log(disableRowKeys)
+
         return (
             <div className='container good_container'>
                 <Spin spinning={isLoading}>
@@ -146,34 +186,19 @@ export default class extends React.Component<any, any> {
                         </GoodList>
                     </div>
                 </Spin>
-                <Modal 
-                title='添加商品'
-                visible={isDialogVisible} 
-                onCancel={() => {this.setState({isDialogVisible: false})}}
-                width={'900px'}
-                onOk={this.handleDialogSubmit.bind(this)}
-                bodyStyle={{padding: '20px 20px 20px 20px'}}
-                >
-                    <div className="container_header">
-                        <GoodFilter 
-                        formFields={filterFields}
-                        category={category}
-                        onChange={this.handleFilterChange.bind(this)}
-                        onFilter={this.handleFilter.bind(this)}
-                        />
-                    </div>
-                    <div className="container_body">
-                        <GoodList
-                        pagination={pagination}
-                        onChange={this.handleChangePage.bind(this)}
-                        dataSource={listData}
-                        onDelete={this.deleteGood.bind(this)}
-                        hasSelector={true}
-                        isShowOperation={false}>
-                        </GoodList>
-                    </div>
-                </Modal>
+                {
+                    isDialogVisible &&
+                    <SelectGoodDialog
+                    visible={isDialogVisible} 
+                    category={category}
+                    onCancel={() => {this.setState({isDialogVisible: false})}}
+                    onOk={this.handleDialogSubmit.bind(this)}
+                    disableRowKeys={disableRowKeys}
+                    />
+                }
             </div>
         );
     }
 }
+
+export default withRouter(GoodTabPane)

@@ -7,84 +7,35 @@ import ProFooter from '@common/components/ProFooter'
 import AddComponentsHoc from '@common/components/AddComponentsHoc'
 import * as Voucher1 from '@common/components/pro/Voucher/1'
 import * as Good1 from '@common/components/pro/Good/1'
-
-const { Content, Sider} = Layout;
+import { PageApi } from '../services/api'
 
 class Engine extends React.Component<any, any> {
     state = {
         voucherList: new Array(),
         goodList: new Array(),
-        pageConfig: [
-            {
-                type: 'good',
-                version: 'good_1',
-                info: {
-                    float: 'left',
-                    values: {
-                        name: '商品名称',
-                        coverImg: '',
-                        desc: '商品描述balabalabala',
-                        price: 8888,
-                        activityPrice: 6888,
-                        buttonColor: 'bisque',
-                        buttonTextColor: 'rgb(83,83,83)',
-                        nameColor: 'rgb(83,83,83)',
-                        descColor: 'rgb(83,83,83)',
-                        priceColor: 'rgb(83,83,83)',
-                        bcColor: '#fff',
-                        bindGood: {},
-                    }
-                }
-            },
-            {
-                type: 'voucher',
-                version: 'voucher_1',
-                info: {
-                    values: [
-                        {
-                            value: 10,
-                            contition: '满200元使用',
-                            buttonColor: 'rgb(255,255,255)',
-                            infoBgColor: '#bb9d77',
-                            valueTextColor: 'rgb(83,83,83)',
-                            conditionTextColor: 'rgb(83,83,83)',
-                            buttonTextColor: 'rgb(83,83,83)',
-                            bindVoucher: {},
-                        },
-                        {
-                            value: 10,
-                            contition: '满200元使用',
-                            buttonColor: 'rgb(255,255,255)',
-                            infoBgColor: '#bb9d77',
-                            valueTextColor: 'rgb(83,83,83)',
-                            conditionTextColor: 'rgb(83,83,83)',
-                            buttonTextColor: 'rgb(83,83,83)',
-                            bindVoucher: {},
-                        },
-                        {
-                            value: 10,
-                            contition: '满200元使用',
-                            buttonColor: 'rgb(255,255,255)',
-                            buttonTextColor: 'rgb(83,83,83)',
-                            infoBgColor: '#bb9d77',
-                            valueTextColor: 'rgb(83,83,83)',
-                            conditionTextColor: 'rgb(83,83,83)',
-                            bindVoucher: {},
-                        },
-                        {
-                            value: 10,
-                            contition: '满200元使用',
-                            buttonColor: 'rgb(255,255,255)',
-                            infoBgColor: '#bb9d77',
-                            valueTextColor: 'rgb(83,83,83)',
-                            conditionTextColor: 'rgb(83,83,83)',
-                            buttonTextColor: 'rgb(83,83,83)',
-                            bindVoucher: {},
-                        }
-                    ]
-                }
-            }
-        ]
+        pageConfig: new Array()
+    }
+
+    getPageConfig() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            PageApi.getPageConfig({
+                page_id: this.props.match.params.id
+            }).then(res => {
+                const { data: {config} } = res;
+                this.setState({
+                    pageConfig: config
+                })
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
     }
 
     _renderModule(moduleConfig: any, index: number) {
@@ -107,6 +58,10 @@ class Engine extends React.Component<any, any> {
         )
     }
 
+    componentDidMount() {
+        this.getPageConfig()
+    }
+
     render() { 
         const { pageConfig } = this.state
 
@@ -127,4 +82,4 @@ class Engine extends React.Component<any, any> {
 export default AddComponentsHoc([
     Voucher1,
     Good1,
-], 'act')(Engine)
+], 'act')(withRouter(Engine))

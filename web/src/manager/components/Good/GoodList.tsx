@@ -44,15 +44,16 @@ export default class extends React.Component<any, any> {
     ];
 
     render() {
-        const { pagination, dataSource, onChange, hasSelector=false, isShowOperation=true} = this.props;
+        const { pagination, dataSource, onChange, hasSelector=false, isShowOperation=true, onSelect, disableRowKeys=[], selectedRowKeys=[]} = this.props;
         const rowSelection = {
             onChange: (selectedRowKeys: any, selectedRows: any) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                onSelect(selectedRowKeys, selectedRows)
             },
             getCheckboxProps: (record: any) => ({
-                disabled: record.name === 'Disabled User', // Column configuration not to be checked
-                name: record.name,
+                disabled: disableRowKeys.indexOf(record.id) > -1,
+                checked: disableRowKeys.concat(selectedRowKeys).indexOf(record.id) > -1,
             }),
+            selectedRowKeys: selectedRowKeys
         }
 
         if(isShowOperation && !_.find(this.columns, (item, index) => item.key === 'operation')) {
@@ -73,6 +74,7 @@ export default class extends React.Component<any, any> {
         
         return (
             <Table 
+            rowKey='id'
             columns={this.columns} 
             pagination={pagination}
             onChange={onChange}

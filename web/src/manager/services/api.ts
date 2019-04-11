@@ -98,4 +98,88 @@ export class ActivityApi extends Request {
             ...params 
         })
     }
+
+    static addGoodToActivity(data: any, params?: any) {
+        return this.request( '/api/activity/add_good_to_activity', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+
+    static removeGoodFromActivity(data: any, params?: any) {
+        return this.request( '/api/activity/remove_good_from_activity', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+}
+
+export class VoucherApi extends Request {
+    static list(data: any, params?: any) {
+        return this.request( '/api/voucher/list', { 
+            method: 'get',
+            data,
+            ...params 
+        })
+    }
+
+    static delete(data: any, params?: any) {
+        return this.request( '/api/voucher/delete', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+
+    static update(data: any, params?: any) {
+        return this.request( '/api/voucher/update', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+
+    static add(data: any, params?: any) {
+        return this.request( '/api/voucher/add', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+}
+
+export class PageApi extends Request {
+    static list(data: any, params?: any) {
+        return this.request( '/api/page/list', { 
+            method: 'get',
+            data,
+            ...params 
+        })
+    }
+
+    static delete(data: any, params?: any) {
+        return this.request( '/api/page/delete', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+    
+    static add(data: any, params?: any) {
+        return this.request( '/api/page/add', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
+
+    static updateTitle(data: any, params?: any) {
+        return this.request( '/api/page/update_title', { 
+            method: 'post',
+            data,
+            ...params 
+        })
+    }
 }

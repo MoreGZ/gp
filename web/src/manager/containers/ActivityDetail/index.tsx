@@ -10,9 +10,6 @@ import * as _ from 'lodash'
 import { withRouter } from 'react-router-dom'
 import * as moment from 'moment'
 
-const FormItem = Form.Item
-const Option = Select.Option
-const TextArea = Input.TextArea
 const TabPane = Tabs.TabPane;
 
 @hot(module)
@@ -165,7 +162,7 @@ class ActivityDetail extends React.Component<any, any> {
 
     render() {
         const { pagination, isDialogVisible, baseInfo, dialogFormFields } = this.state;
-        console.log(dialogFormFields)
+        const { match: {params: {activity_id}} } = this.props
         
         return (
             <div className='container good_container'>
@@ -181,13 +178,13 @@ class ActivityDetail extends React.Component<any, any> {
                     <Card title={<span><Icon type='caret-right' className='title_arrow'></Icon> 活动配置</span>}>
                         <Tabs defaultActiveKey="1" >
                             <TabPane tab="活动商品" key="1">
-                                <GoodTabPane></GoodTabPane>
+                                <GoodTabPane activity_id={activity_id}></GoodTabPane>
                             </TabPane>
                             <TabPane tab="活动代金券" key="2">
-                                <VoucherTabPane></VoucherTabPane>
+                                <VoucherTabPane activity_id={activity_id}></VoucherTabPane>
                             </TabPane>
                             <TabPane tab="活动页面" key="3">
-                                <PageTabPane></PageTabPane>
+                                <PageTabPane activity_id={activity_id}></PageTabPane>
                             </TabPane>
                         </Tabs>
                     </Card>

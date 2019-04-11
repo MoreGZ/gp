@@ -1,6 +1,6 @@
 const Service = require('../libs/Service')
 
-module.exports = class UserService extends Service {
+module.exports = class ActivityService extends Service {
     async list(data) {
         const { page_index, page_size} = data
 
@@ -136,17 +136,18 @@ module.exports = class UserService extends Service {
     }
 
     async addGoodToActivity(data) {
-        const { activity_id, goods } = data
+        const { activity_id, good_ids } = data
 
-        inserSql = `
+        let inserSql = `
             INSERT INTO activity_include_good 
             (activity_id, good_id)
             value
-        `
-        goods.forEach((item, index) => {
-            inserUseSql += `('${activity_id}', '${item}'),`
+        `, res
+
+        good_ids.forEach((item, index) => {
+            inserSql += `('${activity_id}', '${item}'),`
         })
-        inserUseSql =  _.trimEnd(inserUseSql, ',')
+        inserSql =  _.trimEnd(inserSql, ',')
 
         try{
             const inserRes = await db.query(inserSql)
@@ -161,5 +162,24 @@ module.exports = class UserService extends Service {
         }
 
         return res;
+    }
+
+    async removeGoodFromActivity(data) {
+        const { activity_id, good_id } = data;
+
+        let res
+
+        try{
+            let deleteRes = (await db.query(`DELETE from activity_include_good where activity_id=${activity_id} and good_id=${good_id}`)).results
+        
+            res = this.packege({
+                deleteRes,
+            })
+        }catch(err) {
+            res = this.packege({}, false, '服务器出了点错误')
+            throw err
+        }
+
+        return res
     }
 }

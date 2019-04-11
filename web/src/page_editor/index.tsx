@@ -6,6 +6,8 @@ import App from "./App";
 import './style.less'
 
 ReactDOM.render(
-    <App/>,
+    <HashRouter>
+        <App/>
+    </HashRouter>,
     document.getElementById("root")
 );

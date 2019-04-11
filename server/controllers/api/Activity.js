@@ -44,4 +44,20 @@ module.exports = class extends BaseController {
 
         this.send(resData.data, resData.success, resData.message, resData.code)
     }
+
+    async addGoodToActivity() {
+        const data = this.request.body;
+        
+        const resData = await this.service.activity.addGoodToActivity(data)
+
+        this.send(resData.data, resData.success, resData.message, resData.code)
+    }
+
+    async removeGoodFromActivity() {
+        const data = this.request.body;
+        
+        const resData = await this.service.activity.removeGoodFromActivity(data)
+
+        this.send(resData.data, resData.success, resData.message, resData.code)
+    }
 }

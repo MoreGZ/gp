@@ -1,12 +1,13 @@
 const Service = require('../libs/Service')
 
-module.exports = class UserService extends Service {
+module.exports = class GoodService extends Service {
     async list(data) {
-        const { page_index, page_size} = data
+        const { page_index=1, page_size=10, activity_id} = data
+        console.log(data)
 
-        if(!page_index || !page_size) {
-            return this.packege({}, false, 'page_index 或者 page_size不能为空')
-        }
+        // if(!page_index || !page_size) {
+        //     return this.packege({}, false, 'page_index 或者 page_size不能为空')
+        // }
 
         let res,
             selectSql = 'select * from good ',
@@ -14,7 +15,7 @@ module.exports = class UserService extends Service {
             whereSql = 'where '
         
         _.map(data, (value, key) => {
-            if(value && key !== 'page_size' && key !== 'page_index') {
+            if(value && key !== 'page_size' && key !== 'page_index' && key !== 'activity_id') {
                 whereSql += `${key}='${value}' and `
             }
         })
@@ -34,11 +35,11 @@ module.exports = class UserService extends Service {
                 config: JSON.parse(value.config)
             }))
 
-            if(data.activity_id) {
+            if(activity_id) {
                 let activityGoos = (await db.query(`select good_id from activity_include_good where activity_id = ${activity_id}`)).results
-                console.log(activityGoos)
+                activityGoos = _.map(activityGoos, (item) => item.good_id )
                 list = _.filter(list, (value, index) => {
-                    return _.includes(activityGoos, value.id)
+                    return activityGoos.indexOf(value.id) > -1
                 })
             }
         

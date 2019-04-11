@@ -7,9 +7,11 @@ import EditNull from '@common/components/pro/Null'
 import ProHeader from '@common/components/ProHeader'
 import ProFooter from '@common/components/ProFooter'
 import AddComponentsHoc from '@common/components/AddComponentsHoc'
+
 import * as Voucher1 from '@common/components/pro/Voucher/1'
 import * as Good1 from '@common/components/pro/Good/1'
 import * as Banner from '@common/components/pro/Banner'
+import { PageApi } from '../services/api';
 
 const { Content, Sider} = Layout;
 
@@ -18,77 +20,61 @@ class Engine extends React.Component<any, any> {
         current: 'unset',
         selectedKeys: ['unset'],
         isShowDrawer: false,
+        isLoading: false,
         voucherList: new Array(),
         goodList: new Array(),
-        pageConfig: new Array()
+        editHistory: [ new Array() ],
+        historyIndex: 0,
+        pageConfig: new Array(),
     }
-
-    addModuleMenu = [
-        {
-            title: "Banner",
-            key: 'banner',
-            subMenu: [
-            ]
-        },
-        {
-            title: "Photo",
-            key: 'photo',
-            subMenu: [
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/photo1.png',
-                    key: 'photo_1'
-                }
-            ]
-        },
-        {
-            title: "商品",
-            key: 'good',
-            subMenu: [
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/good1.png',
-                    key: 'good_1'
-                },
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/good2.png',
-                    key: 'good_2'
-                },
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/good3.png',
-                    key: 'good_3'
-                },
-            ]
-        },
-        {
-            title: "代金券",
-            key: 'voucher',
-            subMenu: [
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/voucher1.png',
-                    key: 'voucher_1'
-                },
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/voucher2.png',
-                    key: 'voucher_2'
-                },
-                {
-                    contentImgLink: 'http://localhost:7003/img/pro/voucher3.png',
-                    key: 'voucher_3'
-                },
-            ]
-        },
-    ]
 
     editMenu = [
         {text: '保存', key: 'save', icon: <Icon type="save" />},
         {text: '撤销', key: 'back', icon: <Icon type="rollback" />},
         {text: '前进', key: 'forward', icon: <Icon type="right" />},
         {text: '清空', key: 'clear', icon: <Icon type="delete" />},
-        {text: '视图', key: 'view', icon: <Icon type="eye" />},
+        // {text: '视图', key: 'view', icon: <Icon type="eye" />},
         {text: '预览', key: 'preview', icon: <Icon type="file" />},
-        {text: '发布', key: 'public', icon: <Icon type="upload" />}
+        {text: '发布', key: 'public', icon: <Icon type="upload" />},
+        {text: '下架', key: 'offline', icon: <Icon type="arrow-down" />}
     ]
 
     componentDidMount() {
+        this.getPageConfigEdit()
+    }
+
+    getPageConfigEdit() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            PageApi.getPageEditConfig({
+                page_id: this.props.match.params.id
+            }).then(res => {
+                const { data: {config} } = res;
+                this.setState({
+                    pageConfig: config
+                })
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    saveEditConfig(successMsg= '保存成功') {
+        return PageApi.save({
+            page_id: this.props.match.params.id,
+            config_edit: this.state.pageConfig
+        }).then(res => {
+            message.success(successMsg)
+        }).catch((error) => {
+            message.error(`保存失败：${error.message}`)
+            throw error
+        })
     }
 
     handleShowEditDrawer() {
@@ -103,38 +89,149 @@ class Engine extends React.Component<any, any> {
         })
     }
 
-    handleDeleteModule(moduleIndex: number) {
-        const { pageConfig } = this.state
-
-        pageConfig.splice(moduleIndex, 1);
-
-        this.setState({
-            pageConfig
-        })
-    }
-
     handleClickMenu(option: any) {
         const { item, key, keyPath } = option
-        console.log(key)
+
         switch(key) {
-            // case 'save':
-            //     this.handelPublicPage();
-            //     break;
-            // case 'public':
-            //     this.handelPublicPage();
-            //     break;
+            case 'save':
+                this.handleSaveConfig();
+                break;
+            case 'public':
+                this.handelPublicPage();
+                break;
+            case 'offline':
+                this.handelOfflinePage();
+                break;
+            case 'back':
+                this.handleReturnBack();
+                break;
+            case 'forward':
+                this.handleForward();
+                break;
+            case 'clear':
+                this.handleClear();
+                break;
             default:
                 break;
         }
     }
 
+    handelPublicPage() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            PageApi.public({
+                page_id: +this.props.match.params.id
+            }).then(res => {
+                message.success('发布成功')
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    handelOfflinePage() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            PageApi.offline({
+                page_id: +this.props.match.params.id
+            }).then(res => {
+                message.success('页面下架成功')
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    handleSaveConfig() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            this.saveEditConfig().finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    handleReturnBack() {
+        this.setState((preState: any) => {
+            let { historyIndex, editHistory } = preState
+
+            historyIndex = historyIndex > 0 ? historyIndex-- : 0
+
+            return {
+                historyIndex,
+                pageConfig: editHistory[historyIndex]
+            }
+        })
+    }
+
+    handleForward() {
+        this.setState((preState: any) => {
+            let { historyIndex, editHistory } = preState
+
+            historyIndex = historyIndex < editHistory.length-1 ? historyIndex++ : editHistory.length-1
+
+            return {
+                historyIndex,
+                pageConfig: editHistory[historyIndex]
+            }
+        })
+    }
+
+    handleClear() {
+        this.setState((preState: any) => {
+            const { pageConfig } = preState
+
+            this.saveHistory({...pageConfig})
+            return {
+                pageConfig: new Array()
+            }
+        })
+    }
+
+    handleAutoSave() {
+        this.saveEditConfig('自动保存成功')
+    }
+
+    saveHistory(config: any) {
+        this.setState((preState: any) => {
+            let { historyIndex, editHistory } = preState
+
+            if(historyIndex < editHistory.length-1 && historyIndex>0) { // 进行了后退操作
+                editHistory = editHistory.slice(0, historyIndex+1)
+            }
+            editHistory.push(config)
+            historyIndex++
+
+            return {
+                editHistory,
+                historyIndex
+            }
+        })
+    }
+
     handleModuleInfoChange(moduleIndex: number, keyPath: string, value: any) {
         const { pageConfig } = this.state;
 
-        console.log(`[${moduleIndex}]${keyPath}`);
-        console.log(value)
-        console.log(pageConfig)
+        // console.log(`[${moduleIndex}]${keyPath}`);
+        // console.log(value)
+        // console.log(pageConfig)
 
+        this.saveHistory({...pageConfig})
         _.set(pageConfig, `[${moduleIndex}]${keyPath}`, value)
 
         this.setState({
@@ -142,20 +239,12 @@ class Engine extends React.Component<any, any> {
         })
     }
 
-    handleModuleInfoAdd(moduleIndex: any, moduleType: any) {
-        console.log(moduleIndex, moduleType);
-    }
-
-    hendleModuleInfoDelete(moduleIndex: number, infoIndex: number) {
-        console.log(moduleIndex, infoIndex);
-    }
-
     handleAddModule(moduleConfig: any) {
-        console.log(moduleConfig)
         this.setState((preState: any) => {
             let { pageConfig } = preState;
             
             if(moduleConfig) {
+                this.saveHistory({...pageConfig})
                 pageConfig.push(moduleConfig)
             }else {
                 message.error('组件不存在')
@@ -167,15 +256,23 @@ class Engine extends React.Component<any, any> {
         })
     }
 
+    handleDeleteModule(moduleIndex: number) {
+        const { pageConfig } = this.state
+
+        this.saveHistory({...pageConfig})
+        pageConfig.splice(moduleIndex, 1);
+
+        this.setState({
+            pageConfig
+        })
+    }
+
     _renderModule(moduleConfig: any, index: number) {
         const { goodList, voucherList } = this.state
         const { Components } = this.props
         
         const moduleInfo = _.get(moduleConfig, `info`, {});
         let Module: any = Components[moduleConfig.version] 
-        // console.log(moduleInfo, 'moduleInfo')
-        // console.log(moduleConfig, 'moduleConfig')
-        // console.log(Module, 'Module')
         if(!Module) {
             return (): any => {return null}
         }
@@ -188,8 +285,6 @@ class Engine extends React.Component<any, any> {
                 moduleInfo={moduleInfo} 
                 onDelete={this.handleDeleteModule.bind(this, index)}
                 onInfoChange={this.handleModuleInfoChange.bind(this, index)}
-                onInfoDelete={this.hendleModuleInfoDelete.bind(this, index)}
-                onInfoAdd={this.handleModuleInfoAdd.bind(this, index, moduleConfig.type)}
             />
         )
     }
@@ -197,8 +292,6 @@ class Engine extends React.Component<any, any> {
     render() { 
         const { selectedKeys, isShowDrawer, pageConfig, current } = this.state
         const { menu } = this.props
-
-        console.log(pageConfig, 'pageConfig')
 
         return (
             <React.Fragment>
@@ -250,4 +343,4 @@ export default AddComponentsHoc([
     Voucher1,
     Good1,
     // Banner
-])(Engine)
+])(withRouter(Engine))

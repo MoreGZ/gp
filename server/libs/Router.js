@@ -38,7 +38,7 @@ class Router {
         
         const handlerName = middlewareStr.split('@')[1]
         const controllerPath = path.resolve(__dirname, `../controllers/${middlewareStr.split('@')[0]}`,)
-        console.log(controllerPath)
+        console.log(`${controllerPath}@${handlerName}`)
         const controller = require(controllerPath)
         this.coreRouter[method](routePath, controller.creator(handlerName))
         return this
