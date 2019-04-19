@@ -10,10 +10,10 @@ export default class extends React.Component<any, any> {
     render() {
         return (
             <Switch>
-                <Route exact path="/pro" component={Engine}/>
-                <Route exact path="/pro/:id" component={Engine}/>
-                <Route exact path="/pro/:id/preview" component={PreView}/>
-                <Redirect to='/pro'></Redirect>
+                <Route exact path="/editor/pro" component={Engine}/>
+                <Route exact path="/editor/pro/:id" component={Engine}/>
+                <Route exact path="/editor/pro/:id/preview" component={PreView}/>
+                <Redirect to='/editor/pro'></Redirect>
             </Switch>
         );
     }

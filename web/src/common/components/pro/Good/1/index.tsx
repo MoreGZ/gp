@@ -7,9 +7,10 @@ import '../index.less'
 
 export class Module extends React.Component<any, any> {
     render () {
-        const { moduleInfo, onClick, type=0 } = this.props
+        const { moduleInfo, onClick, isEdit=false } = this.props
         const moduleInfoValues = moduleInfo.values
-        
+        let href = isEdit ? 'javascripts:;' : 'http://www.baidu.com'
+
         return (
             <div className={'module_wrapper'} onClick={onClick}>
                 <div className='good_module_content'>
@@ -30,7 +31,7 @@ export class Module extends React.Component<any, any> {
                                     <p className="price">原价￥{moduleInfoValues.price}</p>
                                     <p className="activity_price">抢购价￥{moduleInfoValues.activityPrice}</p>
                                 </div>
-                                <a href="" className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
+                                <a href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
                             </div>
                         </div>
                     )
@@ -45,7 +46,7 @@ export class Module extends React.Component<any, any> {
                                     <p className="price">原价￥{moduleInfoValues.price}</p>
                                     <p className="activity_price">抢购价￥{moduleInfoValues.activityPrice}</p>
                                 </div>
-                                <a href="" className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
+                                <a href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
                             </div>
                             <div className="img_wrapper" style={{
                                 backgroundImage: moduleInfoValues.coverImg,

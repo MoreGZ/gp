@@ -205,6 +205,10 @@ module.exports = class PageService extends Service {
     async getPageConfig(data) {
         const { page_id } = data;
 
+        if(!page_id) {
+            return this.packege({}, false, 'page_id不能为空')
+        }
+
         let res
 
         try{
@@ -223,6 +227,10 @@ module.exports = class PageService extends Service {
 
     async getPageEditConfig(data) {
         const { page_id } = data;
+
+        if(!page_id) {
+            return this.packege({}, false, 'page_id不能为空')
+        }
 
         let res
 

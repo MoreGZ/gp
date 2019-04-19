@@ -1,6 +1,8 @@
 import * as React from "react"
 import { hot } from 'react-hot-loader'
 import { Input, Button, Table, Card, Form, Select, Icon, Modal, Popconfirm, message } from 'antd'
+import AddGoodDialog from '../../components/Good/AddGoodDialog'
+import SubGoodEditDialog from '../../components/Good/SubGoodEditDialog'
 import { GoodApi } from '../../services/api'
 import './style.less'
 import * as _ from 'lodash'
@@ -18,9 +20,12 @@ class GoodDetail extends React.Component<any, any> {
 
         this.state = {
             isDialogVisible: false,
+            isSubGoodDialogVisible: false,
+            subGoodDialogFormFields: {},
             subGoods: [],
             baseInfo: {},
             dialogFormField: {},
+            dialogConfigs: [],
             category: [],
             pagination: {
                 size: 'small',
@@ -28,30 +33,32 @@ class GoodDetail extends React.Component<any, any> {
                 current: 1,
                 total: 9
             },
-            subGoodsColumns: [{
-                title: '活动价',
-                dataIndex: 'activity_price',
-                key: 'activity_price',
-                }, {
-                title: '原价',
-                dataIndex: 'original_price',
-                key: 'original_price',
-                }, {
-                title: '库存',
-                dataIndex: 'count',
-                key: 'count',
-                }, {
-                title: '操作',
-                dataIndex: 'operation',
-                key: 'operation',
-                render: (value: any, record: any, index: number) => {
-                    return <span>
-                        <a href="javascripts:;" className='mr15'>编辑</a>
-                    </span>
-                }
-            }]
+            subGoodsColumns: this.initialSubGoodsColumns
         }
     }
+
+    initialSubGoodsColumns: any = [{
+        title: '活动价',
+        dataIndex: 'activity_price',
+        key: 'activity_price',
+        }, {
+        title: '原价',
+        dataIndex: 'original_price',
+        key: 'original_price',
+        }, {
+        title: '库存',
+        dataIndex: 'count',
+        key: 'count',
+        }, {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (value: any, record: any, index: number) => {
+            return <span>
+                <a href="javascripts:;" className='mr15' onClick={this.handleEditSubGood.bind(this, record)}>编辑</a>
+            </span>
+        }
+    }]
 
     columns = [{
         title: '商品名称',
@@ -70,7 +77,7 @@ class GoodDetail extends React.Component<any, any> {
         dataIndex: 'img',
         key: 'img',
         render: (value: any, record: any, index: number) => {
-            return value && value.length > 0 ? <img src={value[0]} alt=""/> : ''
+            return value && value.length > 0 ? <img src={value[0]} alt="" width='200'/> : ''
         }
         }, {
         title: '操作',
@@ -127,11 +134,18 @@ class GoodDetail extends React.Component<any, any> {
                             ...JSON.parse(subGood.config)
                         }
                     }),
-                    dialogFormField: _.mapValues(baseInfo, (value) => {
+                    dialogFormField: _.mapValues(baseInfo, (value, key) => {
                         return {
-                            value: value
+                            value: key ==='img' ? _.map(value, (item, index) => ({
+                                uid: index,
+                                name: item.split('/')[item.split('/').length -1],
+                                status: 'done',
+                                url: item,
+                                thumbUrl: item
+                            })) : value
                         }
                     }),
+                    dialogConfigs: JSON.parse(baseInfo.config),
                     baseInfo,
                     pagination: {
                         ...this.state.pagination,
@@ -139,7 +153,7 @@ class GoodDetail extends React.Component<any, any> {
                     },
                     subGoodsColumns: [
                         ...configColumns,
-                        ...this.state.subGoodsColumns
+                        ...this.initialSubGoodsColumns
                     ]
                 })
             }).catch((error) => {
@@ -165,19 +179,17 @@ class GoodDetail extends React.Component<any, any> {
         })
     }
 
-    handleUpload() {
-
-    }
-
     handleUpdateGood() {
-        const { dialogFormField} = this.state
+        const { dialogFormField, dialogConfigs} = this.state
         const data = {
             id: dialogFormField.id.value,
             name: dialogFormField.name.value,
             category: dialogFormField.category.value,
             descp: dialogFormField.descp.value,
-            img: dialogFormField.img.value
+            img: _.map(dialogFormField.img.value, (img) => img.response ? img.response.data.filePath : img.thumbUrl),
+            config: _.map(dialogConfigs, (value, index) => ({name: value.name, value: value.value}))
         }
+
         console.log(data)
         this.setState({
             isLoading: true
@@ -199,16 +211,137 @@ class GoodDetail extends React.Component<any, any> {
         })
     }
 
+    handleUpdateSubGood() {
+        const { subGoodDialogFormFields } = this.state
+
+        this.setState({
+            isLoading: true
+        }, () => {
+            GoodApi.updateSubGood({
+                ..._.mapValues(subGoodDialogFormFields, (item) => item.value)
+            }).then(res => {
+                message.success('修改成功')
+                this.setState({
+                    isSubGoodDialogVisible: false,
+                    subGoodDialogFormFields: {}
+                })
+                this.fetchGood()
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    handleSubGoodDialogChange(fields: any) {
+        this.setState({
+            subGoodDialogFormFields: fields
+        })
+    }
+
+    handleEditSubGood(record: any) {
+        this.setState({
+            isSubGoodDialogVisible: true,
+            subGoodDialogFormFields: {
+                original_price: {
+                    value: record.original_price
+                },
+                activity_price: {
+                    value: record.activity_price
+                },
+                count: {
+                    value: record.count
+                },
+                id: {
+                    value: record.id
+                }
+            }
+        })
+    }
+
+    handleChangeConfigName(value: string, index: number) {
+        const { dialogConfigs } = this.state
+        dialogConfigs[index].name = value
+
+        this.setState({
+            dialogConfigs
+        })
+    }
+
+    handleItemInputChange(value: string, index: number) {
+        const { dialogConfigs } = this.state
+        dialogConfigs[index].itemInput = value
+
+        this.setState({
+            dialogConfigs
+        })
+    }
+
+    handleAddConfig() {
+        this.setState((preState: any) => {
+            return {
+                dialogConfigs: preState.dialogConfigs.concat([{
+                    name: '',
+                    itemInput: '',
+                    value: []
+                }])
+            }
+        }, () => {
+            console.log(this.state.dialogConfigs)
+        })
+    }
+
+    handleDeleteConfig(index: number) {
+        this.setState((preState: any) => {
+            _.remove(preState.dialogConfigs, (value, i) => {
+                return index === i
+            })
+            return {
+                dialogConfigs: preState.dialogConfigs
+            }
+        })
+    }
+
+    handleAddConfigItem(index: number) {
+        const { dialogConfigs } = this.state
+
+        if(!dialogConfigs[index].itemInput) {
+            return
+        }
+        this.setState((preState: any) => {
+            preState.dialogConfigs[index].value.push(preState.dialogConfigs[index].itemInput)
+            preState.dialogConfigs[index].itemInput = ''
+            return {
+                dialogConfigs: preState.dialogConfigs
+            }
+        })
+    }
+
+    handleDelectConfigItem(index: number, subIndex: number) {
+        this.setState((preState: any) => {
+            _.remove(preState.dialogConfigs[index].value, (value, i) => {
+                console.log(i, subIndex)
+                return subIndex === i
+            })
+            return {
+                dialogConfigs: preState.dialogConfigs
+            }
+        })
+    }
+
     componentDidMount() {
         this.fetchGood()
         this.fetchCategory()
     }
 
     render() {
-        const { pagination, isDialogVisible, subGoods, baseInfo, subGoodsColumns, dialogFormField, category } = this.state;
-        console.log(this.props);
-        console.log(subGoods)
-        
+        const { pagination, isDialogVisible, subGoods, baseInfo, subGoodsColumns, dialogFormField, category, dialogConfigs, isSubGoodDialogVisible, subGoodDialogFormFields } = this.state;
+        // console.log(dialogFormField)
+        console.log(dialogConfigs)
         return (
             <div className='container good_container'>
                 <div className="container_body mt15">
@@ -231,28 +364,36 @@ class GoodDetail extends React.Component<any, any> {
                         ></Table>
                     </Card>
                 </div>
-                <Modal 
-                visible={isDialogVisible} 
-                onCancel={this.handleCancelDialog.bind(this)}
-                footer={null}
-                className='add_good_dialog'
-                width={'833px'}
-                bodyStyle={{padding: '50px 56px 30px 56px'}}
-                >
-                    <BaseInfoForm
-                    formFields={dialogFormField}
+                <AddGoodDialog
+                    visible={isDialogVisible}
+                    baseFields={dialogFormField}
                     category={category}
-                    onChange={this.handleDialogChange.bind(this)}
-                    onUpload={this.handleUpload.bind(this)}
-                    />
-                    <div className='sure_btn_box'>
-                        <Button 
-                        type='primary'
-                        className='base_btn sure_btn'
-                        onClick={this.handleUpdateGood.bind(this)}
-                        >完成<Icon type='check'></Icon></Button>
-                    </div>
-                </Modal>
+                    config={dialogConfigs}
+                    onCancel={this.handleCancelDialog.bind(this)}
+
+                    onBaseFieldChange={this.handleDialogChange.bind(this)}
+
+                    onChangeConfigName={this.handleChangeConfigName.bind(this)}
+                    onItemInputChange={this.handleItemInputChange.bind(this)}
+                    onAddConfig={this.handleAddConfig.bind(this)}
+                    onDeleteConfig={this.handleDeleteConfig.bind(this)}
+                    onAddConfigItem={this.handleAddConfigItem.bind(this)}
+                    onDeleteConfigItem={this.handleDelectConfigItem.bind(this)}
+                    
+                    onSubmit={this.handleUpdateGood.bind(this)}
+                />
+                <SubGoodEditDialog
+                    visible={isSubGoodDialogVisible}
+                    formFields={subGoodDialogFormFields}
+                    onCancel={() => {
+                        this.setState({
+                            isSubGoodDialogVisible: false,
+                            subGoodDialogFormFields: {}
+                        })
+                    }}
+                    onOk={this.handleUpdateSubGood.bind(this)}
+                    onChange={this.handleSubGoodDialogChange.bind(this)}
+                />
             </div>
         );
     }

@@ -1,5 +1,5 @@
 const Router = require('../../libs/Router')
-
+const checkAuthMiddleware = require('../../middlewares/checkAuth')
 const router = new Router()
 
 router
@@ -11,4 +11,4 @@ router
     .post('/add_good_to_activity', 'api/Activity@addGoodToActivity')
     .post('/remove_good_from_activity', 'api/Activity@removeGoodFromActivity')
 
-module.exports = router
+module.exports = (new Router()).group(router, [checkAuthMiddleware])

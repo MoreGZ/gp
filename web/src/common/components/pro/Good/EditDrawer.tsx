@@ -51,6 +51,7 @@ export default class EditDrawer extends React.Component<any, any> {
                 closable={true}
                 visible={visible}
                 onClose={onClose}
+                width={500}
             >
                 <div style={{marginLeft: '15px'}}>
                     <FormItem label='图片' style={{marginBottom: '5px'}}>

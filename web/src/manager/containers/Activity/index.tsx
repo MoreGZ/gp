@@ -1,8 +1,8 @@
 import * as React from "react"
 import { hot } from 'react-hot-loader'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Input, Button, Table, Card, Form, Select, Icon, Modal, Radio, Row, Col, Tag, message, Spin, Popconfirm } from 'antd'
-import AddActivityDialog from '../../components/AddActivityDialog'
+// import AddActivityDialog from '../../components/AddActivityDialog'
 import { ActivityApi } from '../../services/api'
 import './style.less'
 import * as _ from 'lodash'
@@ -36,7 +36,7 @@ class Activity extends React.Component<any, any> {
         dataIndex: 'id',
         key: 'id',
         render: (value: any, record: any, index: number) => {
-            return <Link to={`/activity/detail/${value}`}>{value}</Link>
+            return <Link to={`/manager/activity/detail/${value}`}>{value}</Link>
         }
         }, {
         title: '活动名称',
@@ -52,18 +52,22 @@ class Activity extends React.Component<any, any> {
         }, {
         title: '活动创建人',
         dataIndex: 'creator',
-        key: 'creator',
-        render: () => '_'
+        key: 'creator'
         }, {
         title: '操作',
         dataIndex: 'operation',
         key: 'operation',
         render: (value: any, record: any, index: number) => {
             return <span>
-                <Popconfirm title='确定删除此商品？' onConfirm={() => {this.deleteActivity(record.id)}} okText="删除" cancelText="取消">
+                <Popconfirm 
+                title='删除活动将会连s删除活动下的页面，代金券和商品，确定删除此活动？' 
+                onConfirm={() => {this.deleteActivity(record.id)}} 
+                okText="删除" 
+                cancelText="取消"
+                style={{width: '200px'}}>
                     <a href="javascripts:;" className='mr15'>删除</a>
                 </Popconfirm>
-                <Link to={`/activity/detail/${record.id}`}>详情</Link>
+                <Link to={`/manager/activity/detail/${record.id}`}>详情</Link>
             </span>
         }
     }];
@@ -169,12 +173,21 @@ class Activity extends React.Component<any, any> {
         })
     }
 
+    handleListChange(pagination: any) {
+        this.setState({
+            pagination
+        }, () => {
+            this.fetchActivityList()
+        })
+    }
+
     componentDidMount() {
         this.fetchActivityList();
     }
 
     render() {
         const { pagination, isDialogVisible, dialogFormFields, listData, isLoading} = this.state;
+
 
         return (
             <div className='container activity_container'>
@@ -188,7 +201,10 @@ class Activity extends React.Component<any, any> {
                             onBlur={this.handleSearch.bind(this)}></Search>
                         </FormItem>
                         <FormItem className='inline_item'>
-                            <Button type='primary' className='btn' onClick={() => { this.setState({isDialogVisible: true}) }}>
+                            <Button type='primary' className='btn' 
+                            // onClick={() => { this.setState({isDialogVisible: true}) }}
+                            onClick={() => { this.props.history.push('/manager/activity/add') }}
+                            >
                                 <Icon type='plus'/>添加活动
                             </Button>
                         </FormItem>
@@ -200,22 +216,21 @@ class Activity extends React.Component<any, any> {
                             <Table 
                             columns={this.columns} 
                             pagination={pagination}
+                            onChange={this.handleListChange.bind(this)}
                             dataSource={listData}></Table>
                         </Card>
                     </Spin>
                 </div>
-                <AddActivityDialog
+                {/* <AddActivityDialog
                     onCancel={this.handleDialogCancel.bind(this)}
                     visible={isDialogVisible}
                     formFields={dialogFormFields}
                     onChange={this.handleDialogChange.bind(this)}
                     onSubmit={this.handleDialogSubmit.bind(this)}
-                />
+                /> */}
             </div>
         );
     }
 }
 
-export default Form.create({
-
-})(Activity);
+export default withRouter(Activity);

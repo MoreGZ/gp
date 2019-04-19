@@ -134,11 +134,12 @@ export default class extends React.Component<any, any> {
     handleDialogSubmit() {
         const {addDialogBaseFields, addDialogConfigs} = this.state;
         const data = {
-            ..._.mapValues(addDialogBaseFields, (value) => value.value),
+            ..._.mapValues(addDialogBaseFields, (value, key) => {
+                return key === 'img' ? _.map(value.value, (img) => img.response.data.filePath) : value.value
+                
+            }),
             config: _.map(addDialogConfigs, (value, index) => ({name: value.name, value: value.value})),
-            img: new Array,
         }
-        console.log(data);
 
         this.setState({
             isLoading: true
@@ -166,10 +167,6 @@ export default class extends React.Component<any, any> {
         this.setState({
             addDialogBaseFields: fields
         })
-    }
-
-    handleUpload() {
-
     }
 
     handleChangeConfigName(value: string, index: number) {
@@ -285,7 +282,7 @@ export default class extends React.Component<any, any> {
                     config={addDialogConfigs}
                     onCancel={() => {this.setState({isDialogVisible: false})}}
                     onBaseFieldChange={this.handleDialogBaseFieldChange.bind(this)}
-                    onUpload={this.handleUpload.bind(this)}
+                    // onUpload={this.handleUpload.bind(this)}
 
                     onChangeConfigName={this.handleChangeConfigName.bind(this)}
                     onItemInputChange={this.handleItemInputChange.bind(this)}

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node ./web/script/build.js",
     "dev-web": "node ./web/script/start.js",
-    "dev-server": "nodemon ./server/app.js"
+    "dev-server": "NODE_ENV=dev nodemon ./server/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +31,7 @@
     "koa-session": "^5.10.1",
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.5",
+    "koa-websocket": "^5.0.1",
     "lodash": "^4.17.11",
     "log4js": "^4.0.2",
     "moment": "^2.24.0",

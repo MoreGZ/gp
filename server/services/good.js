@@ -60,7 +60,12 @@ module.exports = class GoodService extends Service {
 
         let res
 
-        try{
+        try{    
+            let isHasActivityInclude = (await db.query(`select * from activity_include_good where good_id=${good_id}`)).results.length > 0
+            if(isHasActivityInclude) {
+                return this.packege({}, false, '有活动正在促销此商品，商品无法删除')
+            }
+
             let deleteSubGoodRes = (await db.query(`DELETE from sub_good where good_id=${good_id} `)).results
             let deleteGoodRes = (await db.query(`DELETE from good where id=${good_id} `)).results
         
@@ -86,7 +91,9 @@ module.exports = class GoodService extends Service {
             let subGoods = (await db.query(`select * from sub_good where good_id=${good_id} `)).results
         
             res = this.packege({
-                baseInfo,
+                baseInfo: _.mapValues(baseInfo, (item, key) => {
+                    return key === 'img' ? JSON.parse(item) : item
+                }),
                 subGoods
             })
         }catch(err) {
@@ -116,11 +123,10 @@ module.exports = class GoodService extends Service {
         console.log(inserGoodSql)
         try{
             const inserGoodRes = await db.query(inserGoodSql)
-            console.log(inserGoodRes)
             const good_id = inserGoodRes.results.insertId
+
             //往sub_good插入数据
-            const sub_goods = this.buildSubGoodFromConfig(config, 0, [])
-            console.log(sub_goods)
+            let sub_goods = this.buildSubGoodFromConfig(config, 0, [])
             let inserSubGoodSql = _.reduce(sub_goods, (result, value, index) => {
                 return result + `(${good_id}, '${JSON.stringify(value)}', 0, 0, '${this.ctx.username || ""}', 0),`
             }, `
@@ -146,7 +152,7 @@ module.exports = class GoodService extends Service {
     }
 
     async update(data) {
-        const { id, name, category, descp, img } = data;
+        const { id, name, category, descp, img, config } = data;
         let res;
 
         if(id === undefined || name === undefined || category === undefined || descp === undefined || img === undefined) {
@@ -155,15 +161,30 @@ module.exports = class GoodService extends Service {
 
         const sql = `
             UPDATE good 
-            SET name='${name}', category='${category}', descp='${descp}', img='${JSON.stringify(img)}'
+            SET name='${name}', category='${category}', descp='${descp}', img='${JSON.stringify(img)}', config='${JSON.stringify(config)}'
             where id=${id}
         `
-        console.log(sql)
+        // console.log(sql)
         try{
             let sqlRes = await db.query(sql)
-        
+            await db.query(`DELETE from sub_good where good_id=${id}`)
+
+            //往sub_good插入数据
+            let sub_goods = this.buildSubGoodFromConfig(config, 0, [])
+            console.log(sub_goods)
+            let inserSubGoodSql = _.reduce(sub_goods, (result, value, index) => {
+                return result + `(${id}, '${JSON.stringify(value)}', 0, 0, '${this.ctx.username || ""}', 0),`
+            }, `
+                INSERT INTO sub_good 
+                (good_id, config, original_price, activity_price, creator, count)
+                value
+            `)
+            inserSubGoodSql = inserSubGoodSql.substr(0, inserSubGoodSql.length-1)
+            const inserSubGoodRes = await db.query(inserSubGoodSql)
+
             res = this.packege({
-                sqlRes
+                sqlRes,
+                inserSubGoodRes
             })
         }catch(err) {
             res = this.packege({}, false, '服务器出了点错误')
@@ -191,17 +212,17 @@ module.exports = class GoodService extends Service {
     }
 
     async updateSubGood(data) {
-        const { sub_good_id, original_price, activity_price, count } = data
+        const { id, original_price, activity_price, count } = data
         let res
 
-        if(sub_good_id === undefined || original_price === undefined || activity_price === undefined || count === undefined) {
+        if(id === undefined || original_price === undefined || activity_price === undefined || count === undefined) {
             return this.packege({}, false, '请求参数必须包含sub_good_id, original_price, activity_price, count')
         }
 
         const sql = `
             UPDATE sub_good 
             SET original_price=${original_price}, activity_price=${activity_price}, count=${count}
-            where id=${sub_good_id}
+            where id=${id}
         `
 
         try{

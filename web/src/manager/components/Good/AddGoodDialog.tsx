@@ -39,7 +39,7 @@ class AddGoodDialog extends React.Component<any, any> {
                 formFields={baseFields}
                 category={category}
                 onChange={onBaseFieldChange}
-                onUpload={onUpload}
+                // onUpload={onUpload}
                 />
                 <ConfigInfoForm
                 config={config}

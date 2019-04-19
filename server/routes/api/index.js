@@ -7,7 +7,8 @@ const Router = require('../../libs/Router')
 
 const router = new Router()
 router
-    .group('/user', userRouter)
+    .group('/login', userRouter.routerWithNoCheck)
+    .group('/user', userRouter.routerWithCheckAuth)
     .group('/good', goodRouter)
     .group('/activity', activityRouter)
     .group('/voucher', voucherRouter)

@@ -12,14 +12,15 @@ import util from '@common/libs/util'
 
 export class Module extends React.Component<any, any>{
     render () {
-        const { moduleInfo } = this.props
+        const { moduleInfo, isEdit=false } = this.props
+        let href = isEdit ? 'javascripts:;' : '/voucher/${data.bindVoucher.id}'
 
         return (
             <div className={'module_wrapper'}>
                 <div className='voucher_module_content'>
                 {
                     _.map(moduleInfo.values, (data: any, index: number) => (
-                        <a href={`/voucher/${data.bindVoucher.id}`} target='blank'>
+                        <a href={href} target='blank'>
                             <div className={index === 3 ? "editable_voucher1" : 'mr30 editable_voucher1'}>
                                 <div className="voucher_info" style={{background: data.infoBgColor}}>
                                     <div className="value_wrapper" style={{color: data.valueTextColor}}>

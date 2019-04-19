@@ -3,6 +3,7 @@ import Module from '.'
 import { Menu, Upload, Drawer, Icon, Form, Input, Button, Popconfirm, message } from 'antd'
 import config from './config'
 import * as _ from 'lodash'
+import util from '@common/libs/util'
 
 const { SubMenu } = Menu;
 const { Item: FormItem } = Form;
@@ -27,42 +28,31 @@ export default class Container extends React.Component<any, any> {
     handleAddInfo() {
         let { moduleInfo, onInfoChange } = this.props
 
-        moduleInfo.push(Object.assign([], config.info.values[0]))
+        const newModuleInfoValue = moduleInfo.values.concat([util.deepClone(config.info.values[0])])
 
-        onInfoChange(undefined, moduleInfo);
+        onInfoChange('.info.values', newModuleInfoValue);
     }
 
     handleDeletInfo(index: number) {
         let { moduleInfo, onInfoChange } = this.props
 
-        moduleInfo.splice(index, 1);
+        let newModuleInfoValue = moduleInfo.values.slice()
+        newModuleInfoValue.splice(index, 1)
 
-        onInfoChange(undefined, moduleInfo);
+        onInfoChange('.info.values', newModuleInfoValue);
     }
     
     handleUploadChange(info: any, index: number) {
         const { onInfoChange } = this.props
         const status = info.file.status;
         
-
-        if(status === 'uploading') {
-            this.setState({
-                isUploading: true
-            })
-        }
-        if(status !== 'uploading') {
-            this.setState({
-                isUploading: false
-            })
-        }
         if(status === 'done') {
-            const filedir = info.file.response.data.filedir;
-            console.log(index);
-            onInfoChange(`[${index}].img`, filedir)
+            const filedir = info.file.response.data.filePath;
+            onInfoChange(`.info.values.[${index}].img`, filedir)
         }
     }
     
-    handleCickModule() {
+    handleClickModule() {
         this.setState({
             isShowDrawer: true
         })
@@ -75,13 +65,16 @@ export default class Container extends React.Component<any, any> {
     }
     
     render() {
-        const { onDelete, onInfoAdd, onInfoChange, onInfoDelete, moduleInfo} = this.props;
+        const { onDelete, onInfoChange, moduleInfo} = this.props;
         const { isShowDrawer } = this.state
         
         return (
             <React.Fragment>
-                <div onClick={this.handleCickModule.bind(this)}>
-                    <Module moduleInfo={moduleInfo}/>
+                <div onClick={(e) => {
+                    // e.stopPropagation()
+                    this.handleClickModule()
+                }}>
+                    <Module moduleInfo={moduleInfo} isEdit={true}/>
                 </div>
 
                 <Drawer
@@ -91,31 +84,39 @@ export default class Container extends React.Component<any, any> {
                 closable={true}
                 visible={isShowDrawer}
                 onClose={this.handleCloseDrawer.bind(this)}
+                width={500}
                 >
                     <Menu mode="inline">
                     {
-                        _.map(moduleInfo, (data, index: number) => (
-                            <SubMenu title={this._renderSubMemuTitle(index)}>
-                                <div style={{marginLeft: '15px'}}>
-                                    <FormItem label='背景图片' style={{marginBottom: '5px'}}>
-                                        <Upload action='/api/upload' multiple={false} onChange={(info) => { this.handleUploadChange(info, index) }}>
-                                            <Button style={{ display: 'inline-block', width: '216px' }}>
-                                                <Icon type="upload" /> 上传背景图片
-                                            </Button>
-                                        </Upload>
-                                    </FormItem>
-                                </div>
-                                <div style={{marginLeft: '15px'}}>
-                                    <FormItem label="链接" style={{marginBottom: '5px'}}>
-                                        <Input 
-                                            value={_.get(moduleInfo, `[${index}].link`, '')} 
-                                            onChange={(e) => {onInfoChange(`[${index}].link`, e.target.value)}}
-                                            style={{ display: 'inline-block', width: '216px' }}
-                                        />
-                                    </FormItem>
-                                </div>
-                            </SubMenu>
-                        ))
+                        _.map(moduleInfo.values, (data, index: number) => {
+                            console.log(data)
+                            
+                            return (
+                                <SubMenu title={this._renderSubMemuTitle(index)}>
+                                    <div style={{marginLeft: '15px'}}>
+                                        <FormItem label='背景图片' style={{marginBottom: '5px'}}>
+                                            <Upload 
+                                            action='/upload/img' 
+                                            multiple={false} 
+                                            onChange={(info) => { this.handleUploadChange(info, index) }}>
+                                                <Button style={{ display: 'inline-block', width: '216px' }}>
+                                                    <Icon type="upload" /> 上传背景图片
+                                                </Button>
+                                            </Upload>
+                                        </FormItem>
+                                    </div>
+                                    <div style={{marginLeft: '15px'}}>
+                                        <FormItem label="链接" style={{marginBottom: '5px'}}>
+                                            <Input 
+                                                value={_.get(data, 'link', '')} 
+                                                onChange={(e) => {onInfoChange(`.info.values.[${index}].link`, e.target.value)}}
+                                                style={{ display: 'inline-block', width: '216px' }}
+                                            />
+                                        </FormItem>
+                                    </div>
+                                </SubMenu>
+                            )
+                        })
                     }
                     <div style={{textAlign: 'center'}}>
                         <Button shape='circle' onClick={this.handleAddInfo.bind(this)}><Icon type='plus'/></Button>

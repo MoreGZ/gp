@@ -1,28 +1,32 @@
 import * as React from 'react'
 import { Menu, Carousel } from 'antd'
 import * as _ from 'lodash'
-import '../index.less'
+import './index.less'
 import config from './config'
 
 export class Module extends React.Component<any, any> {
     render () {
-        const { moduleInfo, onClick } = this.props
+        const { moduleInfo, onClick, isEdit=false } = this.props
 
         return (
             <div  className={'module_wrapper'} onClick={onClick}>
                 <Carousel>
                 {
-                    _.map(moduleInfo, (data) => (
-                        <a href={data.link || 'javascripts:;'} target='blank'>
-                            <div className='editable_banner1_item' style={{
-                                backgroundImage: `url(${data.img})`, 
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                backgroundSize: 'cover'
-                            }}>
-                            </div>
-                        </a>
-                    ))
+                    _.map(moduleInfo.values, (data) => {
+                        let href = isEdit ? 'javascripts:;' : data.link || 'javascripts:;'
+
+                        return (
+                            <a href={href} target='blank'>
+                                <div className='editable_banner1_item' style={{
+                                    backgroundImage: `url(${data.img})`, 
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundSize: 'cover'
+                                }}>
+                                </div>
+                            </a>
+                        )
+                    })
                 }
                 </Carousel>
             </div>
@@ -48,7 +52,7 @@ export const MenuItem = (props: any) => {
         {...props}
         onClick={() => { onClick( _.extend({}, config) ) }}
         >
-            <img src='http://localhost:7003/img/pro/voucher1.png' width='150'/>
+            <img src='http://localhost:7003/img/pro/banner1.png' width='150'/>
         </Menu.Item>
     )
 }

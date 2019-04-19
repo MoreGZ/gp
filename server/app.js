@@ -4,19 +4,22 @@ const koaViews = require("koa-views")
 const koaBody = require('koa-body')
 const requestLoggermiddleware = require('./middlewares/requestLogger')
 const useSerciceMiddlevare = require('./middlewares/useServices')
+const devViewMiddleware = require('./middlewares/devView')
 const koaSession = require('koa-session')
 const redisStore = require('koa-redis')
 const redis = require('redis')
 const Database = require('./libs/Database')
 const Logger = require('./libs/Logger')
 const _ = require('lodash')
+const env = process.env
 
 const path = require('path')
+const http = require('http')
 
 const config = require("./config")
 const router = require("./routes")
 
-const app = new koa()
+const app = new koa();
 const redisClient = redis.createClient(config.redis.port, config.redis.host)
 const mysqlClient = new Database(config.mysql)
 global.logger = new Logger(config)
@@ -35,13 +38,18 @@ app.use(koaSession({
 }, app))
 
 // 配置ctx.request.body解析中间件
-app.use(koaBody())
+app.use(koaBody({
+    multipart: true,
+    formidable: {
+        maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
+    }
+}))
 
 // Service中间件
 app.use(useSerciceMiddlevare)
 
 // 配置请求日志中间件日志中间件
-app.use(requestLoggermiddleware)
+// app.use(requestLoggermiddleware)
 
 // 配置静态资源加载中间件
 app.use(koaStatic(
@@ -49,11 +57,15 @@ app.use(koaStatic(
 ))
 
 // 配置服务端模板渲染引擎中间件
-app.use(koaViews(path.join(__dirname, "views"), {
-    map: {
-        html: 'ejs'
-    }
-}))
+if(env.NODE_ENV === 'dev') {
+    app.use(devViewMiddleware)
+} else {
+    app.use(koaViews(path.join(__dirname, "views"), {
+        map: {
+            html: 'ejs'
+        }
+    }))
+}
 
 // 初始化路由中间件
 app.use(router.routes()).use(router.allowedMethods())

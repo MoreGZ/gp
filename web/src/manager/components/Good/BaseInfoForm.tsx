@@ -11,6 +11,14 @@ const TextArea = Input.TextArea
 
 @hot(module)
 class BaseInfoForm extends React.Component<any, any> {
+    normFile = (e: any) => {
+        console.log('Upload event:', e);
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList;
+    }
+
     render() {
         const { form, category } = this.props
         const { getFieldDecorator } = form
@@ -42,9 +50,16 @@ class BaseInfoForm extends React.Component<any, any> {
                     }
                     </FormItem>
                     <FormItem>
-                        <Upload action="/upload.do" listType="picture">
-                            <Button className='mt15'><Icon type='upload'></Icon>上传图片</Button>
-                        </Upload>
+                    {
+                        getFieldDecorator('img', { 
+                            valuePropName: 'fileList',
+                            getValueFromEvent: this.normFile
+                        })(
+                            <Upload action="/upload/img" listType='picture'>
+                                <Button className='mt15'><Icon type='upload'></Icon>上传图片</Button>
+                            </Upload>
+                        )
+                    }
                     </FormItem>
                 </div>
                 <div className="form_right">
@@ -64,7 +79,7 @@ class BaseInfoForm extends React.Component<any, any> {
 export default Form.create({
     mapPropsToFields(props: any) {
         const {formFields} = props;
-        
+        console.log(formFields)
         return _.mapValues(formFields, (value, key) => {
             return Form.createFormField(value)
         })

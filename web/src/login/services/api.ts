@@ -2,23 +2,7 @@ import { Request } from '@common/index'
 
 export class UserApi extends Request {
     static login(data: any, params?: any) {
-        return this.request( '/api/user/login', { 
-            method: 'post',
-            data,
-            ...params 
-        })
-    }
-
-    static logout(data: any, params?: any) {
-        return this.request( '/api/user/logout', { 
-            method: 'post',
-            data,
-            ...params 
-        })
-    } 
-
-    static register(data: any, params?: any) {
-        return this.request( '/api/user/register', { 
+        return this.request( '/api/login/login', { 
             method: 'post',
             data,
             ...params 

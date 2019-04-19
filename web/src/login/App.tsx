@@ -25,16 +25,8 @@ export default class extends React.Component<{}, AppState>{
         }
     }
 
-    handleToLoginPage() {
-        this.setState({
-            boxType: 'login'
-        })
-    }
-
     handleToRegisterPage() {
-        this.setState({
-            boxType: 'register'
-        })
+        location.replace('/register')
     }
 
     handleClickLogin() {
@@ -47,9 +39,7 @@ export default class extends React.Component<{}, AppState>{
             UserApi.login(data).then((res) => {
                 message.success('登陆成功')
 
-                setTimeout(() => {
-                    location.replace('./app1.html')
-                }, 2000);
+                location.replace('./manager')
             }).catch((err) => {
                 message.error(`注册失败：${err.message}`)
                 throw err
@@ -62,30 +52,6 @@ export default class extends React.Component<{}, AppState>{
         })
     }
 
-    handleClickRegister() {
-        const { formFields } = this.state
-        const data = _.mapValues(formFields, (value) => value.value)
-
-        this.setState({
-            isLoading: true
-        }, () => {
-            UserApi.register(data).then((res) => {
-                message.success('注册成功')
-
-                setTimeout(() => {
-                    location.reload()
-                }, 2000);
-            }).catch((error) => {    
-                message.error(`注册失败：${error.message}`)
-                throw error
-            }).finally(() => {
-                this.setState({
-                    isLoading: false
-                })
-            })
-        })
-    }
-
     handleInputChange(fields: any) {
         this.setState({
             formFields: fields
@@ -93,18 +59,14 @@ export default class extends React.Component<{}, AppState>{
     }
 
     render() {
-        const { boxType, isLoading, formFields } = this.state; 
-
+        const { isLoading, formFields } = this.state; 
         return (
             <div className='login_page'>
                 <LoginBox 
-                    boxType={boxType} 
                     isLoading={isLoading}
                     formFields={formFields}
                     onInput={this.handleInputChange.bind(this)}
                     onLogin={this.handleClickLogin.bind(this)}
-                    onRegister={this.handleClickRegister.bind(this)}
-                    onToLoginPage={this.handleToLoginPage.bind(this)}
                     onToRegisterPage={this.handleToRegisterPage.bind(this)}
                 />
             </div>

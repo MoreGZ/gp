@@ -11,6 +11,26 @@ module.exports = class Database {
         });
     }
 
+    list() {
+
+    }
+
+    update() {
+
+    }
+
+    delete() {
+
+    }
+
+    add() {
+
+    }
+
+    query() {
+        
+    }
+
     query(sql) {
         return (new Promise((resolve, reject) => {
             this.pool.getConnection(function(err, connection) {

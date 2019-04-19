@@ -14,8 +14,11 @@ module.exports = class UserService extends Service {
 
             if(isExit) {
                 this.ctx.session = {
-                    username: data.username,
-                    userId: selectSqlRes.results[0].id
+                    isLogin: true,
+                    userInfo: {
+                        username: data.username,
+                        userId: selectSqlRes.results[0].id
+                    }
                 }
 
                 res = this.packege({})
@@ -31,7 +34,11 @@ module.exports = class UserService extends Service {
     }
 
     async logout(data) {
-        this.ctx.session = null
+        this.ctx.session = {
+            isLogin: false
+        }
+
+        return this.packege({})
     }
 
     async register(data) {
@@ -62,6 +69,27 @@ module.exports = class UserService extends Service {
             throw err
         }
         console.log(res)
+        return res
+    }
+
+    async getUserInfo(data) {
+        const { userId } = data
+
+        const selectSql = `
+            select * from manager
+            where id='${userId}'
+        `
+
+        let res
+        try{
+            let selectSqlRes = (await db.query(selectSql)).results[0]
+
+            res = this.packege(selectSqlRes)
+        }catch(err) {
+            res = this.packege({}, false, '服务器出了点错误')
+            throw err
+        }
+
         return res
     }
 }

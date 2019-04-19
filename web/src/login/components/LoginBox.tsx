@@ -4,7 +4,7 @@ import { Button, Input, Divider, Icon, Form } from 'antd';
 import { hot } from 'react-hot-loader'
 import { FormComponentProps } from 'antd/lib/form';
 
-const InputItem = Form.Item
+const FormItem = Form.Item
 
 export interface FormFields{
     username?: any,
@@ -12,13 +12,10 @@ export interface FormFields{
 }
 
 interface LoginBoxProps{
-    boxType: 'login' | 'register';
     isLoading: boolean,
     formFields: FormFields,
     onInput: (fields: any) => void,
     onLogin: () => void,
-    onRegister: () => void,
-    onToLoginPage: () => void,
     onToRegisterPage: () => void
 }
 
@@ -27,7 +24,6 @@ interface LoginBoxFormProps extends FormComponentProps, LoginBoxProps {}
 @hot(module)
 class LoginBox extends React.Component<LoginBoxFormProps, any>{
     static PropTypes = {
-        boxType: PropTypes.string,
         isLoading: PropTypes.string,
         onInput: PropTypes.func,
         onLogin: PropTypes.func,
@@ -36,15 +32,29 @@ class LoginBox extends React.Component<LoginBoxFormProps, any>{
         onToRegisterPage: PropTypes.func
     }
 
+    handleSubmit(e: any) {
+        e.preventDefault();
+        const { onLogin } = this.props
+        
+        this.props.form.validateFields((err, values) => {
+            console.log(err)
+            if (err) {
+                return
+            }
+
+            onLogin()
+        });
+    }
+
     render() {
-        const { form, isLoading, boxType } = this.props
+        const { form, isLoading } = this.props
         const { getFieldDecorator } = form
 
         return (
-            <div className="login_box">
+            <Form className="login_box" onSubmit={this.handleSubmit.bind(this)}>
                 <img className='logo' src="http://localhost:7003/img/logo_big.png" alt=""/>
                 <p className='title'>电商活动页搭建平台</p>
-                <InputItem className='input_item'> 
+                <FormItem className='input_item'> 
                 {
                     getFieldDecorator('username', { rules: [{ required: true, message: '请填写用户名' }] })(
                         <Input 
@@ -55,8 +65,8 @@ class LoginBox extends React.Component<LoginBoxFormProps, any>{
                         />
                     )
                 }
-                </InputItem>
-                <InputItem className='input_item'>
+                </FormItem>
+                <FormItem className='input_item'>
                 {
                     getFieldDecorator('password', { rules: [{ required: true, message: '请填写密码' }] })(
                         <Input 
@@ -68,25 +78,17 @@ class LoginBox extends React.Component<LoginBoxFormProps, any>{
                         />
                     )
                 }
-                </InputItem>
-                {
-                    boxType === 'login' ? 
-                    <Button type="primary" className='btn' onClick={this.props.onLogin} loading={isLoading}>登&nbsp;&nbsp;&nbsp;陆</Button> :
-                    <Button type="primary" className='btn' onClick={this.props.onRegister} loading={isLoading}>注&nbsp;&nbsp;&nbsp;册</Button>
-                }
+                </FormItem>
+                <FormItem>
+                    <Button type="primary" className='btn' htmlType="submit" loading={isLoading}>登&nbsp;&nbsp;&nbsp;&nbsp;陆</Button>
+                </FormItem>
                 
-                <div className="divider_box">
-                {
-                    boxType === 'login' ? 
+                <div className="divider_box" >
                     <Divider className='divider'>
                         <a href="javascript:;" onClick={this.props.onToRegisterPage}>注册为新用户</a>
-                    </Divider> :
-                    <Divider className='divider'>
-                        <a href="javascript:;" onClick={this.props.onToLoginPage}>已经是老用户</a>
                     </Divider>
-                }
                 </div>
-            </div>
+            </Form>
         );
     }
 }

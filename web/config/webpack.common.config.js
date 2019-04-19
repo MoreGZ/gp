@@ -21,6 +21,8 @@ entryKeys.forEach((value) => {
     }
 })
 
+console.log(entries)
+
 module.exports = {
     entry: entries,
     resolve: {

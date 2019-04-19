@@ -1,5 +1,5 @@
 const Router = require('../../libs/Router')
-
+const checkAuthMiddleware = require('../../middlewares/checkAuth')
 const router = new Router()
 
 router
@@ -13,4 +13,4 @@ router
     .get('/get_page_config', 'api/Page@getPageConfig')
     .get('/get_page_edit_config', 'api/Page@getPageEditConfig')
 
-module.exports = router
+module.exports = (new Router()).group(router, [checkAuthMiddleware])

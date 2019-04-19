@@ -98,6 +98,9 @@ class Activity extends React.Component<any, any> {
             title: '状态',
             dataIndex: 'status',
             key: 'status',
+            render: (value: any, record: any) => {
+                return value === 1 ? '启用' : '不启用'
+            }
         },
         {
             title: '创建时间',
@@ -226,12 +229,14 @@ class Activity extends React.Component<any, any> {
 
     updateVoucher() {
         const { form } = this.props
+        const { editId } = this.state
         form.validateFields((errors: any, values: any) => {
             if(errors) {
                 return false
             }
 
             const data = {
+                id: editId,
                 name: values.name,
                 threshold: values.threshold,
                 value: values.value,
@@ -249,16 +254,18 @@ class Activity extends React.Component<any, any> {
 
             this.setState({
                 isLoading: true,
-                isDialogVisible: false
+                isDialogVisible: false,
             }, () => {
                 VoucherApi.update(data).then((res) => {
-                    message.success('添加成功')
+                    message.success('修改成功')
                     this.fetchVoucher()
                 }).catch((err) => {
-                    message.error(`添加失败：${err.message}`)
+                    message.error(`修改失败：${err.message}`)
                 }).finally(() => {
                     this.setState({
-                        isLoading: false
+                        isLoading: false,
+                        editId: undefined,
+                        dialogFormFields: {}
                     })
                 })
             })
@@ -268,6 +275,7 @@ class Activity extends React.Component<any, any> {
     handleClickEditBtn(record: any) {
         this.setState({
             dialogFormFields: {
+                id: record.id,
                 name: record.name,
                 threshold: record.threshold,
                 value: record.value,
@@ -281,7 +289,8 @@ class Activity extends React.Component<any, any> {
                 goods: record.goods,
                 activity_id: this.props.activity_id
             },
-            isDialogVisible: true
+            isDialogVisible: true,
+            editId: record.id
         })
     }
 
@@ -383,7 +392,7 @@ class Activity extends React.Component<any, any> {
                 {
                     isDialogVisible &&
                     <Modal
-                        onCancel={() => { this.setState({isDialogVisible: false}) }}
+                        onCancel={() => { this.setState({isDialogVisible: false, editId: undefined, dialogFormFields: {}}) }}
                         visible={isDialogVisible}
                         width={770}
                         bodyStyle={{padding: '45px'}}
@@ -445,7 +454,7 @@ class Activity extends React.Component<any, any> {
                                         {
                                             getFieldDecorator('category_id', { 
                                                 rules: [{ required: true, message: '请选择类别' }],
-                                                initialValue: dialogFormFields.cetagory,
+                                                initialValue: dialogFormFields.category_id,
                                             })(
                                                 <Select 
                                                 className='input'
@@ -518,11 +527,9 @@ class Activity extends React.Component<any, any> {
                                     {
                                         getFieldDecorator('status', { 
                                             rules: [{ required: true, message: '请填写状态' }],
-                                            initialValue: dialogFormFields.status,
+                                            initialValue: dialogFormFields.status === 1 ? true : false,
                                         })(
-                                            <Switch 
-                                                
-                                            />
+                                            <Switch defaultChecked={dialogFormFields.status === 1 ? true : false}/>
                                         )
                                     }
                                     </FormItem>
@@ -557,6 +564,4 @@ class Activity extends React.Component<any, any> {
     }
 }
 
-export default Form.create({
-
-})(Activity);
+export default Form.create({})(Activity);

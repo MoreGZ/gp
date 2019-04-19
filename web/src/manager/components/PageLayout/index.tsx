@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Layout, Menu, Dropdown, Icon, Avatar } from 'antd'
+import { Layout, Menu, Dropdown, Icon, Avatar, message } from 'antd'
 import { Link } from 'react-router-dom'
+import { UserApi } from '../../services/api'
 import * as _ from 'lodash'
 
 import './style.less'
@@ -19,28 +20,69 @@ export default class PageLayout extends React.Component<any, any> {
             text: '活动管理',
             iconName: "setting",
             key: 'activity',
-            link: '/activity'
+            link: '/manager/activity'
         },
         {
             text: '商品管理',
             iconName: "shopping-cart",
             key: 'good',
-            link: '/good'
+            link: '/manager/good'
         }
     ]
 
-    DropDownMenu: React.ReactElement = (
-        <Menu>
-            <Menu.Item>
-                <a href="javascript:;">退出登陆</a>
-            </Menu.Item>
-        </Menu>
-    )
+    handleLogout() {
+        UserApi.logout({}).then(res => {
+            location.replace('/login')
+        }).catch(err => {
+            message.error(err.message)
+        })
+    }
+
+    
+    renderDropDownMenu() {
+        const { userInfo } = this.state
+
+        return (
+            <Menu>
+                <Menu.Item>
+                    <span>{userInfo.username ? `你好，${userInfo.username}` : '请登陆'}</span>
+                </Menu.Item>
+                <Menu.Item>
+                    <a href="javascript:;" onClick={this.handleLogout.bind(this)}>退出登陆</a>
+                </Menu.Item>
+            </Menu>
+        )
+    }
     
     constructor(props: any) {
         super(props)
 
-        
+        this.state = {
+            userInfo: {},
+            isLoading: false
+        }
+    }
+
+    getUserInfo() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            UserApi.getUserInfo({}).then(res => {
+                this.setState({
+                    userInfo: res.data
+                })
+            }).catch(err => {
+                message.error(err.message)
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    componentDidMount() {
+        this.getUserInfo()
     }
 
     render() {
@@ -50,7 +92,7 @@ export default class PageLayout extends React.Component<any, any> {
                     <div className="logo">
                         <img src="http://localhost:7003/img/logo.png" alt="" height="42" width="44"/>
                     </div>
-                    <Dropdown overlay={this.DropDownMenu}>
+                    <Dropdown overlay={this.renderDropDownMenu()}>
                         <Avatar size="large" icon="user" className='avatar'/>
                     </Dropdown>
                 </Header>

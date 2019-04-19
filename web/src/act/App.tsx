@@ -8,9 +8,9 @@ export default class extends React.Component<any, any> {
     render() {
         return (
             <Switch>
-                <Route exact path="/pro" component={Engine}/>
-                <Route exact path="/pro/:id" component={Engine}/>
-                <Redirect to='/pro'></Redirect>
+                <Route exact path="/act/pro" component={Engine}/>
+                <Route exact path="/act/pro/:id" component={Engine}/>
+                <Redirect to='/act/pro'></Redirect>
             </Switch>
         );
     }

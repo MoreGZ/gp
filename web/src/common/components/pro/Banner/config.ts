@@ -4,8 +4,8 @@ export default {
     info: {
         values: [
             {
-                img: '/public/imgs/banner.jpeg',
-                link: 'http://www.baidu.com'
+                img: '/img/banner.png',
+                link: 'javascripts:;'
             }
         ]
     }

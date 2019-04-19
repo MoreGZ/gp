@@ -73,7 +73,7 @@ class Activity extends React.Component<any, any> {
                         <a href="javascripts:;" className='mr15'>删除</a>
                     </Popconfirm>
                     <a href="javascripts:;" onClick={this.handleClickEditBtn.bind(this, record)} className='mr15'>修改标题</a>
-                    <a href={`http://localhost:7001/page_editor.html#/pro/${record.id}`} target='blank'>编辑</a>
+                    <a href={`/editor/pro/${record.id}`} target='blank'>编辑</a>
                 </span>
             }
         }

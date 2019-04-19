@@ -2,7 +2,7 @@ import * as React from "react"
 import { hot } from 'react-hot-loader'
 import { Input, Button, Table, Card, Form, Select, Icon, Modal, Upload, Tabs, message } from 'antd'
 import { ActivityApi } from '../../services/api'
-import AddActivityDialog from '../../components/AddActivityDialog'
+import BaseInfoForm from '../../components/Activity/BaseInfo'
 import GoodTabPane from '../../components/Good/GoodTabPane'
 import VoucherTabPane from '../../components/Voucher/VoucherTabPane'
 import PageTabPane from '../../components/Page/PageTabPane'
@@ -58,10 +58,9 @@ class ActivityDetail extends React.Component<any, any> {
             }
         }, 
         {
-            title: '活动负责人',
+            title: '活动创建人',
             dataIndex: 'creator',
             key: 'creator',
-            render: () => '_'
         }, 
         {
             title: '操作',
@@ -189,14 +188,18 @@ class ActivityDetail extends React.Component<any, any> {
                         </Tabs>
                     </Card>
                 </div>
-                <AddActivityDialog
-                    isUpdate={true}
-                    onCancel={this.handleDialogCancel.bind(this)}
-                    visible={isDialogVisible}
-                    formFields={dialogFormFields}
-                    onChange={this.handleDialogChange.bind(this)}
-                    onSubmit={this.updateActivity.bind(this)}
-                />
+                <Modal
+                visible={isDialogVisible}
+                onCancel={this.handleDialogCancel.bind(this)}
+                onOk={this.updateActivity.bind(this)}
+                width="307px"
+                >
+                    <BaseInfoForm
+                        hasMarginLeft={false}
+                        formFields={dialogFormFields}
+                        onChange={this.handleDialogChange.bind(this)}
+                    ></BaseInfoForm>
+                </Modal>
             </div>
         );
     }

@@ -61,14 +61,14 @@ export default class Request {
                     title: '未登录',
                     content: '您还未登录哦，请先登录~',
                     onOk() {
-                        return history.pushState({}, '', '/login')
+                        return location.replace('/login')
                     },
                 })
         
                 return Promise.reject(res);
             }
 
-            return res
+            return Promise.reject(res);
         })
     }
 

@@ -14,7 +14,7 @@ module.exports = class extends BaseController {
         
         const resData = await this.service.user.logout(data)
 
-        this.send(resData)
+        this.send(resData.data, resData.success, resData.message, resData.code)
     }
 
     async register() {
@@ -26,6 +26,10 @@ module.exports = class extends BaseController {
     }
 
     async getUserInfo() {
+        const data = this.ctx.session.userInfo
         
+        const resData = await this.service.user.getUserInfo(data)
+
+        this.send(resData.data, resData.success, resData.message, resData.code)
     }
 }

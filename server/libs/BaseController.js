@@ -50,7 +50,7 @@ class BaseController {
         if(!success) {
             response = Object.assign(response, {
                 success: false,
-                code: code || -1,
+                code:  code || 0,
                 message: message || '失败',
             })
         }

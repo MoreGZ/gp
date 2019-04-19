@@ -7,7 +7,8 @@ const webpackCommonConfig = require('./webpack.common.config')
 module.exports = Object.assign({}, webpackCommonConfig, {
     output: {
         filename: 'js/[name][hash].js',
-        path: path.resolve(__dirname, '../public')
+        path: path.resolve(__dirname, '../public'),
+        publicPath: "http://localhost:7001/"
     },
     mode: 'development',
     devServer: {
@@ -15,6 +16,14 @@ module.exports = Object.assign({}, webpackCommonConfig, {
         contentBase: path.join(__dirname, '../public'),
         compress: true,
         hot: true,
+        disableHostCheck: true,
+        allowedHosts: [
+            'localhost:7003',
+        ],
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
+        },
         proxy: {
             "/api": "http://localhost:7003"
         }

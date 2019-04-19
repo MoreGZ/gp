@@ -13,7 +13,7 @@ export default class extends React.Component<any, any> {
             dataIndex: 'id',
             key: 'id',
             render: (value: any, record: any, index: number) => {
-                return <Link to={`/good/detail/${value}`}>{value}</Link>
+                return <Link to={`/manager/good/detail/${value}`}>{value}</Link>
             }
         }, 
         {
@@ -45,6 +45,7 @@ export default class extends React.Component<any, any> {
 
     render() {
         const { pagination, dataSource, onChange, hasSelector=false, isShowOperation=true, onSelect, disableRowKeys=[], selectedRowKeys=[]} = this.props;
+
         const rowSelection = {
             onChange: (selectedRowKeys: any, selectedRows: any) => {
                 onSelect(selectedRowKeys, selectedRows)
@@ -66,7 +67,7 @@ export default class extends React.Component<any, any> {
                         <Popconfirm title='确定删除此商品？' onConfirm={() => {this.props.onDelete(record.id)}} okText="删除" cancelText="取消">
                             <a href="javascripts:;" className='mr15'>删除</a>
                         </Popconfirm>
-                        <Link to={`/good/detail/${record.id}`}>详情</Link>
+                        <Link to={`/manager/good/detail/${record.id}`}>详情</Link>
                     </span>
                 }
             })

@@ -2,7 +2,7 @@ const Service = require('../libs/Service')
 
 module.exports = class VoucherService extends Service {
     async list(data) {
-        const { page_index=1, page_size=10, activity_id} = data
+        const { page_index=1, page_size=10} = data
 
         if(!page_index || !page_size) {
             return this.packege({}, false, 'page_index 或者 page_size不能为空')
@@ -28,11 +28,31 @@ module.exports = class VoucherService extends Service {
         try{
             let total = (await db.query(countSql)).results[0]['count(*)']
             let list = (await db.query(selectSql)).results
+
+            let res1 = [], res2 = []
+            if(list.length > 0) {
+                let sql1 = 'select * from voucher_include_category where '
+                let sql2 = 'select * from voucher_include_good where '
+                list.forEach((item, index) => {
+                    sql1 += `voucher_id=${item.id} or `
+                    sql2 += `voucher_id=${item.id} or `
+                })
+                sql1 = _.trimEnd(sql1, ' or ')
+                sql2 = _.trimEnd(sql2, ' or ')
+
+                res1 = (await db.query(sql1)).results
+                res2 = (await db.query(sql2)).results
+            }
+            
         
             res = this.packege({
                 list: list.map((item, index) => {
+                    let goods = res2.filter((val) => item.id == val.voucher_id).map((val) => val.good_id)
+                    let category_id = res1.filter((val) => item.id == val.voucher_id).map((val) => val.category_id)
                     return {
-                        ...item
+                        ...item,
+                        goods,
+                        category_id: category_id.length > 0 ? category_id[0] : undefined
                     }
                 }),
                 total
@@ -72,15 +92,14 @@ module.exports = class VoucherService extends Service {
         const { name, activity_id, threshold, value, period_start, period_end, num, status, scenes, goods, category_id } = data
         let res;
 
-        // 新建代金券
-        let inserVoucherSql = `
+        try{
+            let inserVoucherSql = `
             INSERT INTO voucher 
             (name, activity_id, threshold, value, period_start, period_end, num, use_num, received_num, status, scenes)
             value
             ('${name}', '${activity_id}', '${threshold}', '${value}', '${period_start}', '${period_end}', ${num}, ${num}, ${num}, ${status}, ${scenes})
         ` 
 
-        try{
             const inserVoucherRes = await db.query(inserVoucherSql)
             const voucher_id = inserVoucherRes.results.insertId
 
@@ -128,49 +147,44 @@ module.exports = class VoucherService extends Service {
     }
 
     async update(data) {
-        const { id, name, threshold, value, period_start, period_end, num, status, goods, cetagory  } = data;
+        const { id, name, threshold, value, period_start, period_end, num, status, scenes, goods, category_id  } = data;
         let res;
 
         const sql = `
             UPDATE voucher 
-            SET name='${name}', threshold='${threshold}', value='${value}', period_start='${period_start}, period_end='${period_end}, num=${num}, status=${status}'
+            SET name='${name}', threshold=${threshold}, value=${value}, period_start='${period_start}', period_end='${period_end}', num=${num}, status=${status}, scenes=${scenes}
             where id=${id}
         `
         let inserUseSql = ''
 
-        if(cetagory && cetagory.length > 0) { //品类代金券
+        if(scenes === 2 && category_id) { //品类代金券
             inserUseSql = `
-                INSERT INTO voucher_include_cetagory 
+                INSERT INTO voucher_include_category 
                 (voucher_id, category_id)
                 value
-                ('${activity_id}', '${voucher_id}')
+                ('${id}', '${category_id}')
             `
-            cetagory.forEach((item, index) => {
-                inserUseSql += `('${voucher_id}', '${item}'),`
-            })
-
-            inserUseSql =  _.trimEnd(inserUseSql, ',')
-            
-        } else if (good && good.length > 0) {
+        } else if (scenes === 3 && goods && goods.length > 0) {
             inserUseSql = `
                 INSERT INTO voucher_include_good 
                 (voucher_id, good_id)
                 value
-                ('${activity_id}', '${voucher_id}')
             `
             goods.forEach((item, index) => {
-                inserUseSql += `('${voucher_id}', '${item}'),`
+                inserUseSql += `('${id}', '${item}'),`
             })
 
             inserUseSql =  _.trimEnd(inserUseSql, ',')
         }
         
         try{
+            console.log(sql)
             let sqlRes = await db.query(sql)
-            await db.query(`DELETE from voucher_include_good where voucher_id=${voucher_id} `)
-            await db.query(`DELETE from voucher_include_cetagory where voucher_id=${voucher_id} `)
-            if(scenes === 2 && scenes === 3){
-                const inserUseRes = await db.query(inserUseSql)
+            await db.query(`DELETE from voucher_include_good where voucher_id=${id} `).results
+            await db.query(`DELETE from voucher_include_category where voucher_id=${id} `).results
+            let inserUseRes
+            if(scenes === 2 || scenes === 3){
+                inserUseRes = await db.query(inserUseSql).results
             }
             res = this.packege({
                 sqlRes,

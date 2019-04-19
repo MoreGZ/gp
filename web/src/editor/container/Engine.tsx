@@ -373,5 +373,5 @@ class Engine extends React.Component<any, any> {
 export default AddComponentsHoc([
     Voucher1,
     Good1,
-    // Banner
+    Banner
 ])(withRouter(Engine))
