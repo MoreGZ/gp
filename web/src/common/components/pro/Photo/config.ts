@@ -1,4 +1,11 @@
 export default {
-    photoUrl: '/public/imgs/banner.jpeg',
-    photoHeight: 100,
+    type: 'photo',
+    version: 'photo_1',
+    info: {
+        photoHeight: '',
+        photoWidth: '',
+        values: {
+            photoUrl: '/img/photo.png',
+        }
+    }
 }

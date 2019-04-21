@@ -9,27 +9,25 @@ export class Module extends React.Component<any, any> {
         const { moduleInfo, onClick, isEdit=false } = this.props
 
         return (
-            <div  className={'module_wrapper'} onClick={onClick}>
-                <Carousel>
-                {
-                    _.map(moduleInfo.values, (data) => {
-                        let href = isEdit ? 'javascripts:;' : data.link || 'javascripts:;'
+            <Carousel>
+            {
+                _.map(moduleInfo.values, (data) => {
+                    let href = isEdit ? 'javascripts:;' : data.link || 'javascripts:;'
 
-                        return (
-                            <a href={href} target='blank'>
-                                <div className='editable_banner1_item' style={{
-                                    backgroundImage: `url(${data.img})`, 
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    backgroundSize: 'cover'
-                                }}>
-                                </div>
-                            </a>
-                        )
-                    })
-                }
-                </Carousel>
-            </div>
+                    return (
+                        <a href={href} target='blank'>
+                            <div className='editable_banner1_item' style={{
+                                backgroundImage: `url(${data.img})`, 
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'cover'
+                            }}>
+                            </div>
+                        </a>
+                    )
+                })
+            }
+            </Carousel>
             
         )
     }
@@ -46,7 +44,7 @@ export const MenuItem = (props: any) => {
 
     return (
         <Menu.Item 
-        key='voucher_1' 
+        key='banner_1' 
         style={{height: 'auto', paddingLeft: '20px', position: 'relative', right: '24px', textAlign: 'center'}} 
         className='img-menu-item'
         {...props}

@@ -125,14 +125,6 @@ export default class Container extends React.Component<any, any>{
                                                 style={{ display: 'inline-block', width: '216px' }}
                                             />
                                         </div>
-                                        <div>
-                                            <span style={{fontSize: '12px'}}>背景</span><br/>
-                                            <ColorSelect 
-                                                value={_.get(data, `buttonColor`, '')} 
-                                                onChange={(e: any) => {onInfoChange(`.info.values.[${index}].buttonColor`, e.target.value)}}
-                                                style={{ display: 'inline-block', width: '216px' }}
-                                            />
-                                        </div>
                                     </FormItem>
                                 </div>
                                 {/* <div style={{marginLeft: '15px'}}>

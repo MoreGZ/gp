@@ -4,6 +4,8 @@ import { Menu, Upload, Drawer, Icon, Form, Input, Button, Popconfirm, message } 
 import config from './config'
 import * as _ from 'lodash'
 import util from '@common/libs/util'
+import ProModuleWrapper from '../../ProModuleWrapper'
+
 
 const { SubMenu } = Menu;
 const { Item: FormItem } = Form;
@@ -65,18 +67,21 @@ export default class Container extends React.Component<any, any> {
     }
     
     render() {
-        const { onDelete, onInfoChange, moduleInfo} = this.props;
+        const { onDelete, onInfoChange, moduleInfo, onModuleUp, onModuleDown} = this.props;
         const { isShowDrawer } = this.state
         
         return (
             <React.Fragment>
-                <div onClick={(e) => {
-                    // e.stopPropagation()
-                    this.handleClickModule()
-                }}>
+                <ProModuleWrapper 
+                    onDelete={onDelete}
+                    onUp={onModuleUp}
+                    onDown={onModuleDown}
+                    onClick={(e: any) => {
+                        this.handleClickModule()
+                    }}
+                >
                     <Module moduleInfo={moduleInfo} isEdit={true}/>
-                </div>
-
+                </ProModuleWrapper>
                 <Drawer
                 title= 'banner'
                 placement='left'

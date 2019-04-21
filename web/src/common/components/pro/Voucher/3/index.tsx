@@ -16,25 +16,21 @@ export class Module extends React.Component<any, any>{
         let href = isEdit ? 'javascripts:;' : '/voucher/${data.bindVoucher.id}'
 
         return (
-            <div className='voucher_module_content1'>
+            <div className='voucher_module_content3'>
             {
                 _.map(moduleInfo.values, (data: any, index: number) => (
                     <a href={href} target='blank'>
                         <div className={index === 3 ? "editable_voucher" : 'mr30 editable_voucher'}>
                             <div className="voucher_info" style={{background: data.infoBgColor}}>
                                 <div className="value_wrapper" style={{color: data.valueTextColor}}>
-                                    <span className='value_unit'>￥</span>
-                                    <span className='value_value' style={{fontSize: (5-(`${data.value}`).length)*10 + 20 + 'px' }}>{data.value}</span>
-                                </div>
-                                <div className="text_wrapper" style={{color: data.conditionTextColor}}>
+                                    <span className='value'>￥{data.value}</span>
                                     <span className="name">代金券</span><br/>
+                                </div>
+                                <div className="voucher_button" style={{ color: data.buttonTextColor }}>
                                     <span className="condition">{data.contition}</span>
+                                    <span className="button">立即领取 ></span>
                                 </div>
                             </div>
-                            <div className="voucher_button" style={{
-                                background: data.buttonColor,
-                                color: data.buttonTextColor
-                            }}>立即领取</div>
                         </div>
                     </a>
                 ))
@@ -61,7 +57,7 @@ export const MenuItem = (props: any) => {
         {...props}
         onClick={() => { onClick( util.deepClone(config) ) }}
         >
-            <img src='http://localhost:7003/img/pro/voucher1.png' width='150'/>
+            <img src='http://localhost:7003/img/pro/voucher3.png' width='150'/>
         </Menu.Item>
     )
 }

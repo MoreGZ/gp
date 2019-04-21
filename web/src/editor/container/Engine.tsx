@@ -10,8 +10,12 @@ import AddComponentsHoc from '@common/components/AddComponentsHoc'
 import util from '@common/libs/util'
 
 import * as Voucher1 from '@common/components/pro/Voucher/1'
+import * as Voucher2 from '@common/components/pro/Voucher/2'
+import * as Voucher3 from '@common/components/pro/Voucher/3'
 import * as Good1 from '@common/components/pro/Good/1'
+import * as Good2 from '@common/components/pro/Good/2'
 import * as Banner from '@common/components/pro/Banner'
+import * as Photo from '@common/components/pro/Photo'
 import { PageApi } from '../services/api';
 
 const { Content, Sider} = Layout;
@@ -257,6 +261,37 @@ class Engine extends React.Component<any, any> {
         })
     }
 
+    handleModuleUp(index: number) {
+        if(index <= 0) {
+            return 
+        }
+
+        let { pageConfig } = this.state
+        let preModuleConfig = pageConfig[index-1]
+        pageConfig[index-1] = pageConfig[index]
+        pageConfig[index] = preModuleConfig
+
+        this.setState({
+            pageConfig
+        })
+    }
+
+    handleModuleDowm(index: number) {
+        let { pageConfig } = this.state
+
+        if(index >= pageConfig.length-1) {
+            return 
+        }
+
+        let nextModuleConfig = pageConfig[index+1]
+        pageConfig[index+1] = pageConfig[index]
+        pageConfig[index] = nextModuleConfig
+
+        this.setState({
+            pageConfig
+        })
+    }
+
     handleModuleInfoChange(moduleIndex: number, keyPath: string, value: any) {
         const { pageConfig } = this.state;
 
@@ -316,6 +351,8 @@ class Engine extends React.Component<any, any> {
                 moduleInfo={moduleInfo} 
                 onDelete={this.handleDeleteModule.bind(this, index)}
                 onInfoChange={this.handleModuleInfoChange.bind(this, index)}
+                onModuleUp={this.handleModuleUp.bind(this, index)}
+                onModuleDown={this.handleModuleDowm.bind(this, index)}
             />
         )
     }
@@ -372,6 +409,10 @@ class Engine extends React.Component<any, any> {
 
 export default AddComponentsHoc([
     Voucher1,
+    Voucher2,
+    Voucher3,
     Good1,
-    Banner
+    Good2,
+    Banner,
+    Photo
 ])(withRouter(Engine))

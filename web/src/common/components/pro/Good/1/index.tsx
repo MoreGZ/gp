@@ -3,7 +3,7 @@ import { Menu } from 'antd'
 import * as _ from 'lodash'
 import config from './config'
 import util from '@common/libs/util'
-import '../index.less'
+import './style.less'
 
 export class Module extends React.Component<any, any> {
     render () {
@@ -12,14 +12,13 @@ export class Module extends React.Component<any, any> {
         let href = isEdit ? 'javascripts:;' : 'http://www.baidu.com'
 
         return (
-            <div className={'module_wrapper'} onClick={onClick}>
-                <div className='good_module_content'>
+            <div className='good_module_content1'>
                 {
                     moduleInfo.float == 'left'
                     ? (
                         <div className="editable_good1" style={{color: moduleInfoValues.bcColor}}>
                             <div className="img_wrapper" style={{
-                                backgroundImage: moduleInfoValues.coverImg,
+                                backgroundImage: `url('${moduleInfoValues.coverImg}')`,
                             }}>
                             </div>
                             <div className="content_right ml45">
@@ -49,14 +48,13 @@ export class Module extends React.Component<any, any> {
                                 <a href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
                             </div>
                             <div className="img_wrapper" style={{
-                                backgroundImage: moduleInfoValues.coverImg,
+                                backgroundImage: `url('${moduleInfoValues.coverImg}')`
                             }}>
                             </div>
                         </div>
                     )
                 }
                 </div>
-            </div>
         )
     }
 }

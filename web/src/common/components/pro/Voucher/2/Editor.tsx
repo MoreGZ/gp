@@ -77,6 +77,7 @@ export default class Container extends React.Component<any, any>{
                                         />
                                     </FormItem>
                                 </div>
+                                
                                 <div style={{marginLeft: '15px'}}>
                                     <FormItem label="优惠条件" style={{marginBottom: '5px'}}>
                                         <Input 
@@ -86,6 +87,7 @@ export default class Container extends React.Component<any, any>{
                                         />
                                     </FormItem>
                                 </div>
+
                                 <div style={{marginLeft: '15px'}}>
                                     <FormItem label="背景颜色" style={{marginBottom: '5px'}}>
                                         <ColorSelect 
@@ -95,6 +97,7 @@ export default class Container extends React.Component<any, any>{
                                         />
                                     </FormItem>
                                 </div>
+
                                 <div style={{marginLeft: '15px'}}>
                                     <FormItem label="字体颜色" style={{marginBottom: '5px'}}>
                                         <div>
@@ -115,26 +118,7 @@ export default class Container extends React.Component<any, any>{
                                         </div>
                                     </FormItem>
                                 </div>
-                                <div style={{marginLeft: '15px'}}>
-                                    <FormItem label="按钮颜色" style={{marginBottom: '5px'}}>
-                                        <div>
-                                            <span style={{fontSize: '12px'}}>字体</span><br/>
-                                            <ColorSelect 
-                                                value={_.get(data, `buttonTextColor`, '')} 
-                                                onChange={(e: any) => {onInfoChange(`.info.values.[${index}].buttonTextColor`, e.target.value)}}
-                                                style={{ display: 'inline-block', width: '216px' }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <span style={{fontSize: '12px'}}>背景</span><br/>
-                                            <ColorSelect 
-                                                value={_.get(data, `buttonColor`, '')} 
-                                                onChange={(e: any) => {onInfoChange(`.info.values.[${index}].buttonColor`, e.target.value)}}
-                                                style={{ display: 'inline-block', width: '216px' }}
-                                            />
-                                        </div>
-                                    </FormItem>
-                                </div>
+
                                 {/* <div style={{marginLeft: '15px'}}>
                                     <FormItem label="绑定优惠券" style={{marginBottom: '5px'}}>
                                         <Select
