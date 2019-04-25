@@ -11,8 +11,8 @@ export default class extends React.Component<any, any> {
         return (
             <Switch>
                 <Route exact path="/editor/pro" component={Engine}/>
-                <Route exact path="/editor/pro/:id" component={Engine}/>
-                <Route exact path="/editor/pro/:id/preview" component={PreView}/>
+                <Route exact path="/editor/pro/:activity_id/:page_id" component={Engine}/>
+                <Route exact path="/editor/pro/:activity_id/:page_id/preview" component={PreView}/>
                 <Redirect to='/editor/pro'></Redirect>
             </Switch>
         );

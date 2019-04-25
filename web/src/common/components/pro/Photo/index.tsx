@@ -6,15 +6,17 @@ import config from './config'
 export class Module extends React.Component<any, any> {
     render () {
         const { moduleInfo, isEdit=false } = this.props
-
+        const href = moduleInfo.values.link && !isEdit ? moduleInfo.values.link : 'javascript:;'
         return (
             <div style={{textAlign: 'center'}}>
-                <img 
-                src={moduleInfo.values.photoUrl} 
-                alt="" 
-                width={moduleInfo.photoWidth} 
-                height={moduleInfo.photoHeight}
-                />
+                <a href={href} target='_blank'>
+                    <img 
+                    src={moduleInfo.values.photoUrl} 
+                    alt="" 
+                    width={moduleInfo.photoWidth} 
+                    height={moduleInfo.photoHeight}
+                    />
+                </a>
             </div>
         )
     }

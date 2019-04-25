@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Module from '.'
-import { Menu, Upload, Drawer, Icon, Form, InputNumber, Button, Popconfirm, message } from 'antd'
+import { Menu, Upload, Drawer, Icon, Form, InputNumber, Button, Popconfirm, message, Input } from 'antd'
 import config from './config'
 import * as _ from 'lodash'
 import util from '@common/libs/util'
@@ -53,7 +53,7 @@ export default class Container extends React.Component<any, any> {
                 </ProModuleWrapper>
 
                 <Drawer
-                title= 'banner'
+                title= '图片'
                 placement='left'
                 style={{padding: '0px'}}
                 closable={true}
@@ -76,18 +76,27 @@ export default class Container extends React.Component<any, any> {
                     </div>
                     <div style={{marginLeft: '15px'}}>
                         <FormItem label="图片宽度" style={{marginBottom: '5px'}}>
-                            <InputNumber 
+                            <Input 
                                 value={moduleInfo.photoWidth} 
-                                onChange={(value) => {onInfoChange(`.info.photoWidth`, value)}}
+                                onChange={(e) => {onInfoChange(`.info.photoWidth`, e.target.value)}}
                                 style={{ display: 'inline-block', width: '216px' }}
                             />
                         </FormItem>
                     </div>
                     <div style={{marginLeft: '15px'}}>
                         <FormItem label="图片高度" style={{marginBottom: '5px'}}>
-                            <InputNumber 
+                            <Input 
                                 value={moduleInfo.photoHeight} 
-                                onChange={(value) => {onInfoChange(`.info.photoHeight`, value)}}
+                                onChange={(e) => {onInfoChange(`.info.photoHeight`, e.target.value)}}
+                                style={{ display: 'inline-block', width: '216px' }}
+                            />
+                        </FormItem>
+                    </div>
+                    <div style={{marginLeft: '15px'}}>
+                        <FormItem label="链接" style={{marginBottom: '5px'}}>
+                            <Input 
+                                value={moduleInfo.values.link} 
+                                onChange={(e) => {onInfoChange(`.info.values.link`, e.target.value)}}
                                 style={{ display: 'inline-block', width: '216px' }}
                             />
                         </FormItem>

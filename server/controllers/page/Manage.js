@@ -14,6 +14,8 @@ module.exports = class extends BaseController {
     }
 
     async act() {
+        console.log(this.request.url)
+
         await this.ctx.render('act')
     }
 

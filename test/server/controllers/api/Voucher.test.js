@@ -1,4 +1,5 @@
-// var assert = require('assert')
+const assert = require('power-assert')
+const axios = require('axios')
 // var GoodServices = require('../services/good')
 
 // var listResponse1 = {
@@ -22,13 +23,10 @@
 // }
 // var goodServices = new GoodServices();
 
-// describe('商品模测试c', function() { // 单个模块
-//     describe('查询商品列表', function() { //单个接口
-//         it('不传人任何筛选条件，仅传入页数和页码', function() { //单个接口用例
-//             assert.equal(goodServices.list({
-//                 page_size: 10,
-//                 page_index: 1
-//             }))
-//         }, listResponse)
-//     })
-// })
+describe('商品模测试c', () => { // 单个模块
+    describe('查询商品列表', () => { //单个接口
+        it('不传人任何筛选条件，仅传入页数和页码', async () => { //单个接口用例
+            assert(2 === 2)
+        })
+    })
+})

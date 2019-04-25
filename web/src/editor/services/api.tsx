@@ -41,3 +41,23 @@ export class PageApi extends Request {
         })
     }
 }
+
+export class VoucherApi extends Request {
+    static list(data: any, params?: any) {
+        return this.$request( '/api/voucher/list', { 
+            method: 'get',
+            data,
+            ...params 
+        })
+    }
+}
+
+export class GoodApi extends Request {
+    static list(data: any, params?: any) {
+        return this.$request( '/api/good/list', { 
+            method: 'get',
+            data,
+            ...params 
+        })
+    }
+}

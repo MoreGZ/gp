@@ -26,20 +26,17 @@ export default class Container extends React.Component<any, any>{
         })
     }
 
-    // handleSelectBindVoucher(key: string | number ,value: any) {
-    //     const { voucherList, onInfoChange } = this.props
+    handleSelectBindVoucher(index: string | number ,value: any) {
+        const { voucherList, onInfoChange } = this.props
         
-    //     const voucher = _.find(voucherList, (voucher) => voucher.id == value)
-    //     console.log(key);
-    //     console.log(value);
-    //     console.log(voucher);
-    //     onInfoChange(`${key}.bindVoucher`, _.extend({}, voucher))
-    //     onInfoChange(`${key}.value`, voucher.value)
-    //     onInfoChange(`${key}.contition`, `满${voucher.threshold}元使用`)
-    // }
+        const voucher = _.find(voucherList, (voucher) => voucher.id == value)
+        onInfoChange(`.info.values.${index}.bindVoucher`, _.extend({}, voucher))
+        onInfoChange(`.info.values.${index}.value`, voucher.value)
+        onInfoChange(`.info.values.${index}.contition`, `满${voucher.threshold}元使用`)
+    }
     
     render() {
-        const { onDelete, onInfoChange, goodList, voucherList, moduleInfo, onModuleUp, onModuleDown} = this.props;
+        const { onDelete, onInfoChange, voucherList, moduleInfo, onModuleUp, onModuleDown} = this.props;
         const { isShowDrawer } = this.state
         
         return (
@@ -135,7 +132,7 @@ export default class Container extends React.Component<any, any>{
                                         </div>
                                     </FormItem>
                                 </div>
-                                {/* <div style={{marginLeft: '15px'}}>
+                                <div style={{marginLeft: '15px'}}>
                                     <FormItem label="绑定优惠券" style={{marginBottom: '5px'}}>
                                         <Select
                                             value={_.get(data, `bindVoucher.name`, '')} 
@@ -149,7 +146,7 @@ export default class Container extends React.Component<any, any>{
                                         }
                                         </Select>
                                     </FormItem>
-                                </div> */}
+                                </div>
                             </SubMenu>
                         ))
                     }

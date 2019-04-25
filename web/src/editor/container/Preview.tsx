@@ -10,12 +10,12 @@ class Engine extends React.Component<any, any> {
         pageConfig: new Array()
     }
 
-    getPageConfig() {
+    getPageEditConfig() {
         this.setState({
             isLoading: true
         }, () => {
-            PageApi.getPageConfig({
-                page_id: this.props.match.params.id
+            PageApi.getPageEditConfig({
+                page_id: this.props.match.params.page_id
             }).then(res => {
                 const { data: {config} } = res;
                 this.setState({
@@ -33,7 +33,7 @@ class Engine extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        this.getPageConfig()
+        this.getPageEditConfig()
     }
 
     render() { 

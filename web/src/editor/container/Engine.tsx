@@ -16,7 +16,7 @@ import * as Good1 from '@common/components/pro/Good/1'
 import * as Good2 from '@common/components/pro/Good/2'
 import * as Banner from '@common/components/pro/Banner'
 import * as Photo from '@common/components/pro/Photo'
-import { PageApi } from '../services/api';
+import { PageApi, VoucherApi, GoodApi } from '../services/api';
 
 const { Content, Sider} = Layout;
 
@@ -48,10 +48,61 @@ class Engine extends React.Component<any, any> {
 
     componentDidMount() {
         this.getPageConfigEdit()
+        this.fetchGoodList()
+        this.fetchVoucherList()
 
         this.t = setInterval(() => {
             this.saveEditConfig('自动保存成功')
         }, 20000)
+    }
+
+    fetchGoodList() {
+        this.setState({
+            isLoading: true
+        }, () => {
+            GoodApi.list({
+                page_index: 1,
+                page_size: 10000,
+            }).then((res: any) => {
+                const { data: {list} } = res;
+                this.setState({
+                    goodList: list
+                })
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+    
+    fetchVoucherList() {
+        const data = {
+            page_index: 1,
+            page_size: 10000,
+            activity_id: +this.props.match.params.activity_id
+        }
+
+        this.setState({
+            isLoading: true
+        }, () => {
+            VoucherApi.list(data).then(res => {
+                const { data: {list} } = res;
+                this.setState({
+                    voucherList: list
+                })
+            }).catch((error) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
     }
 
     getPageConfigEdit() {
@@ -59,7 +110,7 @@ class Engine extends React.Component<any, any> {
             isLoading: true
         }, () => {
             PageApi.getPageEditConfig({
-                page_id: this.props.match.params.id
+                page_id: this.props.match.params.page_id
             }).then(res => {
                 const { data: {config} } = res;
                 this.setState({
@@ -80,7 +131,7 @@ class Engine extends React.Component<any, any> {
 
     saveEditConfig(successMsg= '保存成功') {
         return PageApi.save({
-            page_id: this.props.match.params.id,
+            page_id: this.props.match.params.page_id,
             config_edit: this.state.pageConfig
         }).then(res => {
             message.success(successMsg)
@@ -124,9 +175,16 @@ class Engine extends React.Component<any, any> {
             case 'clear':
                 this.handleClear();
                 break;
+            case 'preview':
+                this.handlePreview();
+                break;
             default:
                 break;
         }
+    }
+
+    handlePreview() {
+        window.open(`/editor/pro/${this.props.match.params.activity_id}/${this.props.match.params.page_id}/preview`)
     }
 
     handelPublicPage() {
@@ -134,7 +192,7 @@ class Engine extends React.Component<any, any> {
             isLoading: true
         }, () => {
             PageApi.public({
-                page_id: +this.props.match.params.id
+                page_id: +this.props.match.params.page_id
             }).then(res => {
                 message.success('发布成功')
             }).catch((error) => {
@@ -153,7 +211,7 @@ class Engine extends React.Component<any, any> {
             isLoading: true
         }, () => {
             PageApi.offline({
-                page_id: +this.props.match.params.id
+                page_id: +this.props.match.params.page_id
             }).then(res => {
                 message.success('页面下架成功')
             }).catch((error) => {
@@ -267,6 +325,8 @@ class Engine extends React.Component<any, any> {
         }
 
         let { pageConfig } = this.state
+
+        this.saveHistory(util.deepClone(pageConfig))
         let preModuleConfig = pageConfig[index-1]
         pageConfig[index-1] = pageConfig[index]
         pageConfig[index] = preModuleConfig
@@ -283,6 +343,7 @@ class Engine extends React.Component<any, any> {
             return 
         }
 
+        this.saveHistory(util.deepClone(pageConfig))
         let nextModuleConfig = pageConfig[index+1]
         pageConfig[index+1] = pageConfig[index]
         pageConfig[index] = nextModuleConfig

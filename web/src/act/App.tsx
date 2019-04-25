@@ -10,7 +10,7 @@ export default class extends React.Component<any, any> {
         return (
             <Switch>
                 <Route exact path="/act/pro" component={Engine}/>
-                <Route exact path="/act/pro/:id" component={Engine}/>
+                <Route exact path="/act/pro/:activity_id/:page_id" component={Engine}/>
                 <Route exact path="/act/buy" component={Buy}/>
                 <Route exact path="/act/buy/:good_id" component={Buy}/>
                 <Redirect to='/act/pro'></Redirect>

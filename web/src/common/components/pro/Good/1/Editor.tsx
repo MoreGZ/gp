@@ -37,9 +37,29 @@ export default class Container extends React.Component<any, any>{
             onInfoChange(`.info.values.coverImg`, filedir)
         }
     }
+
+    handleSelectBindGood(value: any) {
+        const { goodList, onInfoChange } = this.props
+        
+        let good = _.find(goodList, (good) => good.id == value)
+        good = _.mapValues(good, (item, key) => {
+            return key === 'img' ? JSON.parse(item) : item
+        })
+        console.log(good)
+        onInfoChange(`.info.values.bindGood`, _.extend({}, good))
+        onInfoChange(`.info.values.name`, good.name)
+        onInfoChange(`.info.values.desc`, good.descp)
+        onInfoChange(`.info.values.activityPrice`, good.min_activity_price)
+        onInfoChange(`.info.values.price`, good.min_original_price)
+        // let imgs = JSON.parse(good.img)
+        // console.log(imgs)
+        if(good.img.length>0) {
+            onInfoChange(`.info.values.coverImg`, good.img[0])
+        }
+    }
     
     render() {
-        const { onDelete, onInfoChange, moduleInfo, goodList, voucherList, onModuleUp, onModuleDown} = this.props;
+        const { onDelete, onInfoChange, moduleInfo, goodList, onModuleUp, onModuleDown} = this.props;
         const { isShowDrawer } = this.state
         
         return (
@@ -55,7 +75,7 @@ export default class Container extends React.Component<any, any>{
                     <Module moduleInfo={moduleInfo} isEdit={true}/>
                 </ProModuleWrapper>
                 <Drawer
-                    title= '代金券-样式1'
+                    title= '商品-样式1'
                     placement='left'
                     style={{padding: '0px'}}
                     closable={true}
@@ -175,7 +195,7 @@ export default class Container extends React.Component<any, any>{
                             />
                         </FormItem>
                     </div>
-                    {/*                 
+                                    
                     <div style={{marginLeft: '15px'}}>
                         <FormItem label="绑定商品" style={{marginBottom: '5px'}}>
                             <Select
@@ -190,7 +210,7 @@ export default class Container extends React.Component<any, any>{
                             }
                             </Select>
                         </FormItem>
-                    </div> */}
+                    </div>
 
                     <div style={{textAlign: 'center', marginTop: '20px'}}>
                         <Button type="danger" style={{width: '216px'}} onClick={onDelete}>删除</Button>

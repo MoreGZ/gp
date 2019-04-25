@@ -9,10 +9,10 @@ export class Module extends React.Component<any, any> {
         const { moduleInfo, onClick, isEdit=false } = this.props
 
         return (
-            <Carousel>
+            <Carousel autoplay>
             {
                 _.map(moduleInfo.values, (data) => {
-                    let href = isEdit ? 'javascripts:;' : data.link || 'javascripts:;'
+                    let href = isEdit ? 'javascript:;' : data.link || 'javascript:;'
 
                     return (
                         <a href={href} target='blank'>

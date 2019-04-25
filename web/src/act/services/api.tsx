@@ -9,3 +9,13 @@ export class PageApi extends Request {
         })
     }
 }
+
+export class GoodApi extends Request {
+    static query(data: any, params?: any) {
+        return this.$request( '/api/good/query', { 
+            method: 'get',
+            data,
+            ...params 
+        })
+    } 
+}

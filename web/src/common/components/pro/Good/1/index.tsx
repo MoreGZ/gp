@@ -6,10 +6,14 @@ import util from '@common/libs/util'
 import './style.less'
 
 export class Module extends React.Component<any, any> {
+    componentDidMount() {
+        document.title = '活动页面'
+    }
+
     render () {
         const { moduleInfo, onClick, isEdit=false } = this.props
         const moduleInfoValues = moduleInfo.values
-        let href = isEdit ? 'javascripts:;' : 'http://www.baidu.com'
+        let href = isEdit ? 'javascript:;' : `/act/buy/${moduleInfoValues.bindGood ? moduleInfoValues.bindGood.id : ''}`
 
         return (
             <div className='good_module_content1'>
@@ -30,7 +34,7 @@ export class Module extends React.Component<any, any> {
                                     <p className="price">原价￥{moduleInfoValues.price}</p>
                                     <p className="activity_price">抢购价￥{moduleInfoValues.activityPrice}</p>
                                 </div>
-                                <a href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
+                                <a target='_blank' href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
                             </div>
                         </div>
                     )
@@ -45,7 +49,7 @@ export class Module extends React.Component<any, any> {
                                     <p className="price">原价￥{moduleInfoValues.price}</p>
                                     <p className="activity_price">抢购价￥{moduleInfoValues.activityPrice}</p>
                                 </div>
-                                <a href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
+                                <a target='_blank' href={href} className="button" style={{color: moduleInfoValues.buttonTextColor, backgroundColor: moduleInfoValues.buttonColor}}>立即抢购</a>
                             </div>
                             <div className="img_wrapper" style={{
                                 backgroundImage: `url('${moduleInfoValues.coverImg}')`

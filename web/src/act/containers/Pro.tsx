@@ -15,7 +15,7 @@ class Engine extends React.Component<any, any> {
             isLoading: true
         }, () => {
             PageApi.getPageConfig({
-                page_id: this.props.match.params.id
+                page_id: this.props.match.params.page_id
             }).then(res => {
                 const { data: {config} } = res;
                 this.setState({

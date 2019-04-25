@@ -1,25 +1,78 @@
 import * as React from 'react'
 import './style.less'
-import {Icon, Col, Row, Carousel, Select, Form, Button} from 'antd'
+import {Icon, Col, Row, Carousel, Select, Form, Button, message} from 'antd'
 import ProHeader from '@common/components/ProHeader'
 import ProFooter from '@common/components/ProFooter'
 import CardSelector from '../../components/CardSelector'
 import NumberInput from '../../components/NumberInput'
+import { GoodApi } from '../../services/api'
+import * as _ from 'lodash'
+import { withRouter } from 'react-router-dom'
 
 const Option = Select.Option
 const FormItem = Form.Item
 
-export default class Buy extends React.Component{
+class Buy extends React.Component<any, any>{
+    state: any = {
+        subGoods: [],
+        baseInfo: {
+            config: [],
+            img: []
+        },
+        price: 0
+    }
+
+    fetchGood() {
+        const { match: {params: {good_id}} } = this.props
+        const data = {
+            good_id
+        }
+
+        this.setState({
+            isLoading: true
+        }, () => {
+            GoodApi.query(data).then(res => {
+                const { data: {baseInfo, subGoods} } = res;
+                
+                this.setState({
+                    subGoods: _.map(subGoods, (subGood, index) => {
+                        return {
+                            ...subGood,
+                            ...JSON.parse(subGood.config)
+                        }
+                    }),
+                    price: baseInfo.is_in_activity === 1 ? subGoods[0].activity_price : subGoods[0].original_price,
+                    baseInfo: _.mapValues(baseInfo, (item, key) => {
+                        return key === 'config' ? JSON.parse(item) : item
+                    }),
+                })
+            }).catch((error: any) => {
+                message.error(error.message)
+                throw error
+            }).finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
+        })
+    }
+
+    componentDidMount() {
+        this.fetchGood()
+    }
+
     render() {
-        const color = [
-            {value: '奶酪色', label: '奶酪色'},
-            {value: '水蓝色', label: '水蓝色'},
-        ]
-        const version = [
-            {value: '单机标配', label: '单机标配'},
-            {value: '礼盒套餐', label: '礼盒套餐'},
-            {value: '实用套餐（含10张相纸）', label: '实用套餐（含10张相纸）'}
-        ]
+        let {baseInfo: {config}, baseInfo, price} = this.state
+        console.log(config)
+        // const color = [
+        //     {value: '奶酪色', label: '奶酪色'},
+        //     {value: '水蓝色', label: '水蓝色'},
+        // ]
+        // const version = [
+        //     {value: '单机标配', label: '单机标配'},
+        //     {value: '礼盒套餐', label: '礼盒套餐'},
+        //     {value: '实用套餐（含10张相纸）', label: '实用套餐（含10张相纸）'}
+        // ]
 
         
         return (
@@ -34,16 +87,16 @@ export default class Buy extends React.Component{
                             <Col span={10}>
                             <Carousel dots={false} style={{width: '434px'}}>
                                 <div className="img_box">
-                                    <img src="/img/test.jpeg" alt=""/>
+                                    <img src={baseInfo.img[0]} alt=""/>
                                 </div>
                                 <div className="img_box">
-                                    <img src="/img/test.jpeg" alt=""/>
+                                    <img src={baseInfo.img[0]} alt=""/>
                                 </div>
                                 <div className="img_box">
-                                    <img src="/img/test.jpeg" alt=""/>
+                                    <img src={baseInfo.img[0]} alt=""/>
                                 </div>
                                 <div className="img_box">
-                                    <img src="/img/test.jpeg" alt=""/>
+                                    <img src={baseInfo.img[0]} alt=""/>
                                 </div>
                             </Carousel>
                             <div className="img_controller">
@@ -53,14 +106,14 @@ export default class Buy extends React.Component{
                                 <div className="img_controller_btn_imgs">
                                     <div className="img_controller_btn_imgs_wrapper" style={{width: '345px'}}>
                                         <div className="img_btn_box">
-                                            <img src="/img/test.jpeg" alt=""/>
+                                            <img src={baseInfo.img[0]} alt=""/>
                                             <div className="img_btn_box_border"></div>
                                         </div>
                                         <div className="img_btn_box">
-                                            <img src="/img/test.jpeg" alt=""/>
+                                            <img src={baseInfo.img[0]} alt=""/>
                                         </div>
                                         <div className="img_btn_box">
-                                            <img src="/img/test.jpeg" alt=""/>
+                                            <img src={baseInfo.img[0]} alt=""/>
                                         </div>
                                     </div>
                                 </div>
@@ -71,13 +124,13 @@ export default class Buy extends React.Component{
                             </Col>
                             <Col span={14}>
                                 <div className="good_name">
-                                    富士一次成像相机（instax）mini7C 相机
+                                {baseInfo.name}
                                 </div>
                                 <div className="good_desc">
-                                    自动对焦/即拍即现
+                                {baseInfo.descp}
                                 </div>
                                 <div className="good_price">
-                                    ￥399
+                                ￥{price}
                                 </div>
                                 <div className="good_send_address">
                                     <FormItem className='input_item' label='配送至' colon={false}>
@@ -92,12 +145,23 @@ export default class Buy extends React.Component{
                                         <span class='is_has_good'>有货</span>
                                     </FormItem>
                                 </div>
-                                <div className="good_config">
-                                    <CardSelector label='选择颜色' options={color} onChange={() => {}}></CardSelector>
-                                </div>
-                                <div className="good_config">
+                                {
+                                    _.map(config, (configItem) => {
+                                        return (
+                                            <div className="good_config">
+                                                <CardSelector 
+                                                label={`选择${configItem.name}`} 
+                                                options={_.map(configItem.value, (subConfigItem) => {
+                                                    return {value: subConfigItem, label: subConfigItem}
+                                                } )} 
+                                                onChange={() => {}}></CardSelector>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                {/* <div className="good_config">
                                     <CardSelector label='选择版本' options={version} onChange={() => {}}></CardSelector>
-                                </div>
+                                </div> */}
                                 <div className="good_count">
                                     <NumberInput label='数量'></NumberInput>
                                 </div>
@@ -123,3 +187,5 @@ export default class Buy extends React.Component{
         )
     }
 }
+
+export default withRouter(Buy)

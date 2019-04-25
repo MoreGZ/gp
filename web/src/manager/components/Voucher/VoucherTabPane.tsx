@@ -119,9 +119,9 @@ class Activity extends React.Component<any, any> {
             render: (value: any, record: any, index: number) => {
                 return <span>
                     <Popconfirm title='确定删除此商品？' onConfirm={() => {this.deleteVoucher(record.id)}} okText="删除" cancelText="取消">
-                        <a href="javascripts:;" className='mr15'>删除</a>
+                        <a href="javascript:;" className='mr15'>删除</a>
                     </Popconfirm>
-                    <a href="javascripts:;" onClick={this.handleClickEditBtn.bind(this, record)}>修改</a>
+                    <a href="javascript:;" onClick={this.handleClickEditBtn.bind(this, record)}>修改</a>
                 </span>
             }
         }

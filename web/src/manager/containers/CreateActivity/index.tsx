@@ -150,9 +150,9 @@ class CreateActivity extends React.Component<any, any> {
                 title: '活动页面',
                 activity_id: +this.state.currentId
             }).then((res) => {
-                // message.success('成功')
-                console.log(res)
-                window.open(`/editor/pro/${res.data.inserRes.results.insertId}`)
+                message.success('成功')
+                // console.log(res)
+                window.open(`/editor/pro/${this.state.currentId}/${res.data.inserRes.results.insertId}`)
                 this.props.history.goBack()
             }).catch((err) => {
                 message.error(`添加失败：${err.message}`)

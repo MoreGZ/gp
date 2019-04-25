@@ -78,7 +78,7 @@ class LoginBox extends React.Component<LoginBoxFormProps, any>{
                     </FormItem>
                     
                     <div className="divider_box">
-                        <a href="javascript:;" onClick={this.props.onToLoginPage}>已有账户？登陆</a>
+                        <a href="javascript:;" onClick={this.props.onToLoginPage}>已有账户？登录</a>
                     </div>
                 </div>
             </Form>

@@ -55,7 +55,7 @@ class GoodDetail extends React.Component<any, any> {
         key: 'operation',
         render: (value: any, record: any, index: number) => {
             return <span>
-                <a href="javascripts:;" className='mr15' onClick={this.handleEditSubGood.bind(this, record)}>编辑</a>
+                <a href="javascript:;" className='mr15' onClick={this.handleEditSubGood.bind(this, record)}>编辑</a>
             </span>
         }
     }]
@@ -85,7 +85,7 @@ class GoodDetail extends React.Component<any, any> {
         key: 'operation',
         render: (value: any, record: any, index: number) => {
             return <span>
-                <a href="javascripts:;" className='mr15' onClick={() => {this.setState({isDialogVisible: true})}}>修改</a>
+                <a href="javascript:;" className='mr15' onClick={() => {this.setState({isDialogVisible: true})}}>修改</a>
             </span>
         }
     }];

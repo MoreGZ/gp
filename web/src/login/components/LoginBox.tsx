@@ -80,7 +80,7 @@ class LoginBox extends React.Component<LoginBoxFormProps, any>{
                 }
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" className='btn' htmlType="submit" loading={isLoading}>登&nbsp;&nbsp;&nbsp;&nbsp;陆</Button>
+                    <Button type="primary" className='btn' htmlType="submit" loading={isLoading}>登&nbsp;&nbsp;&nbsp;&nbsp;录</Button>
                 </FormItem>
                 
                 <div className="divider_box" >

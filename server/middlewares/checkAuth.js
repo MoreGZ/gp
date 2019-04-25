@@ -4,10 +4,10 @@ module.exports = async (ctx, next) => {
     if(!ctx.session.isLogin) {
         ctx.body = {
             data: {
-                message: '亲，请先登陆系统噢～'
+                message: '亲，请先登录系统噢～'
             },
             success: false,
-            message: '请先登陆',
+            message: '请先登录',
             code: -1
         }
     }

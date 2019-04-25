@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Layout, Menu, Dropdown, Icon, Avatar, message } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { UserApi } from '../../services/api'
 import * as _ from 'lodash'
 
@@ -14,7 +14,7 @@ interface MenuItem {
     link: string
 }
 
-export default class PageLayout extends React.Component<any, any> {
+class PageLayout extends React.Component<any, any> {
     menuItems: MenuItem[] = [
         {
             text: '活动管理',
@@ -45,10 +45,10 @@ export default class PageLayout extends React.Component<any, any> {
         return (
             <Menu>
                 <Menu.Item>
-                    <span>{userInfo.username ? `你好，${userInfo.username}` : '请登陆'}</span>
+                    <span>{userInfo.username ? `你好，${userInfo.username}` : '请登录'}</span>
                 </Menu.Item>
                 <Menu.Item>
-                    <a href="javascript:;" onClick={this.handleLogout.bind(this)}>退出登陆</a>
+                    <a href="javascript:;" onClick={this.handleLogout.bind(this)}>退出登录</a>
                 </Menu.Item>
             </Menu>
         )
@@ -82,10 +82,16 @@ export default class PageLayout extends React.Component<any, any> {
     }
 
     componentDidMount() {
+
+
         this.getUserInfo()
     }
 
     render() {
+        const { location: {pathname} } = this.props
+        
+        const defaultSelectedKey = pathname.split('/')[2]
+
         return (
             <Layout className='page_layout'>
                 <Header className="header">
@@ -100,8 +106,7 @@ export default class PageLayout extends React.Component<any, any> {
                     <Sider width={104} className='sider'>
                         <Menu
                             mode="inline"
-                            defaultSelectedKeys={["activity"]}
-                            defaultOpenKeys={["sub1"]}
+                            selectedKeys={[defaultSelectedKey]}
                             className='menu'
                         >
                         {
@@ -130,3 +135,5 @@ export default class PageLayout extends React.Component<any, any> {
         )
     }
 }
+
+export default withRouter(PageLayout)

@@ -148,7 +148,7 @@ export default class extends React.Component<any, any> {
                 message.success('添加商品成功')
                 this.fetchGoodList()
                 this.setState({
-                    addDialogConfigs: {},
+                    addDialogConfigs: [],
                     addDialogBaseFields: [],
                     isDialogVisible: false
                 })

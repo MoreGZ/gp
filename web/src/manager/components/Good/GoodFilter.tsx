@@ -33,8 +33,8 @@ class GoodFilter extends React.Component<any, any> {
                 </FormItem>
                 <FormItem>
                 {
-                    getFieldDecorator('good_id')(
-                        <Input placeholder='商品名称' className='input'></Input>
+                    getFieldDecorator('id')(
+                        <Input placeholder='商品id' className='input'></Input>
                     )
                 }
                 </FormItem>

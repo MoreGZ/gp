@@ -32,7 +32,7 @@ class Activity extends React.Component<any, any> {
         }, () => {
             GoodApi.list({
                 page_index: 1,
-                page_size: 12,
+                page_size: 10000,
             }).then(res => {
                 const { data: {list} } = res;
                 this.setState({

@@ -3,11 +3,10 @@ const Service = require('../libs/Service')
 module.exports = class GoodService extends Service {
     async list(data) {
         const { page_index=1, page_size=10, activity_id} = data
-        console.log(data)
 
-        // if(!page_index || !page_size) {
-        //     return this.packege({}, false, 'page_index 或者 page_size不能为空')
-        // }
+        if(!page_index || !page_size) {
+            return this.packege({}, false, 'page_index 或者 page_size不能为空')
+        }
 
         let res,
             selectSql = 'select * from good ',
@@ -34,6 +33,17 @@ module.exports = class GoodService extends Service {
                 ...value,
                 config: JSON.parse(value.config)
             }))
+
+            for(let index in list) {
+                let good_id = list[index].id
+                let sub_goods = (await db.query(`select * from sub_good where good_id=${good_id} `)).results
+                console.log(sub_goods)
+                let minPriceGood = _.minBy(sub_goods, (sub_good) => { return sub_good.activity_price })
+                
+                console.log(minPriceGood)
+                list[index]['min_activity_price'] = minPriceGood && minPriceGood.activity_price
+                list[index]['min_original_price'] = minPriceGood && minPriceGood.original_price
+            }
 
             if(activity_id) {
                 let activityGoos = (await db.query(`select good_id from activity_include_good where activity_id = ${activity_id}`)).results
@@ -84,6 +94,10 @@ module.exports = class GoodService extends Service {
     async query(data) {
         const { good_id } = data;
 
+        if(!good_id) {
+            return this.packege({}, false, 'good_id不能为空')
+        }
+
         let res
 
         try{
@@ -110,8 +124,15 @@ module.exports = class GoodService extends Service {
 
         // 配置不得为空
         if(config.length === 0) {
-            this.packege({}, false, '商品应该至少有一种配置')
+            return this.packege({}, false, '商品应该至少有一种配置')
         }
+
+        for(let index in config) {
+            if(config[index].value.length <= 0) {
+                return this.packege({}, false, '配z至少要包含一个配置项')
+            }
+        }
+        
 
         //往good插入数据
         let inserGoodSql = `

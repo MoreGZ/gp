@@ -65,7 +65,7 @@ class Activity extends React.Component<any, any> {
                 okText="删除" 
                 cancelText="取消"
                 style={{width: '200px'}}>
-                    <a href="javascripts:;" className='mr15'>删除</a>
+                    <a href="javascript:;" className='mr15'>删除</a>
                 </Popconfirm>
                 <Link to={`/manager/activity/detail/${record.id}`}>详情</Link>
             </span>

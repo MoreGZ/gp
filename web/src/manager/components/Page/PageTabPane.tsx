@@ -70,10 +70,10 @@ class Activity extends React.Component<any, any> {
             render: (value: any, record: any, index: number) => {
                 return <span>
                     <Popconfirm title='确定删除此商品？' onConfirm={() => {this.deletePage(record.id)}} okText="删除" cancelText="取消">
-                        <a href="javascripts:;" className='mr15'>删除</a>
+                        <a href="javascript:;" className='mr15'>删除</a>
                     </Popconfirm>
-                    <a href="javascripts:;" onClick={this.handleClickEditBtn.bind(this, record)} className='mr15'>修改标题</a>
-                    <a href={`/editor/pro/${record.id}`} target='blank'>编辑</a>
+                    <a href="javascript:;" onClick={this.handleClickEditBtn.bind(this, record)} className='mr15'>修改标题</a>
+                    <a href={`/editor/pro/${this.props.activity_id}/${record.id}`} target='blank'>编辑</a>
                 </span>
             }
         }

@@ -5,18 +5,18 @@ import { withRouter } from 'react-router-dom'
 import ProHeader from '@common/components/ProHeader'
 import ProFooter from '@common/components/ProFooter'
 import AddComponentsHoc from '@common/components/AddComponentsHoc'
+
 import * as Voucher1 from '@common/components/pro/Voucher/1'
+import * as Voucher2 from '@common/components/pro/Voucher/2'
+import * as Voucher3 from '@common/components/pro/Voucher/3'
 import * as Good1 from '@common/components/pro/Good/1'
-import { PageApi } from '../../services/api'
+import * as Good2 from '@common/components/pro/Good/2'
+import * as Banner from '@common/components/pro/Banner'
+import * as Photo from '@common/components/pro/Photo'
 
 class Engine extends React.Component<any, any> {
-    state = {
-        voucherList: new Array(),
-        goodList: new Array(),
-    }
 
     _renderModule(moduleConfig: any, index: number | string) {
-        const { goodList, voucherList } = this.state
         const { Components } = this.props
         
         const moduleInfo = _.get(moduleConfig, `info`, {});
@@ -26,12 +26,12 @@ class Engine extends React.Component<any, any> {
         }
 
         return (
-            <Module 
-                goodList={goodList}
-                voucherList={voucherList}
-                key={index}
-                moduleInfo={moduleInfo} 
-            />
+            <div className="module_wrapper">
+                <Module 
+                    key={index}
+                    moduleInfo={moduleInfo} 
+                />
+            </div>
         )
     }
 
@@ -54,5 +54,10 @@ class Engine extends React.Component<any, any> {
 
 export default AddComponentsHoc([
     Voucher1,
+    Voucher2,
+    Voucher3,
     Good1,
+    Good2,
+    Banner,
+    Photo
 ], 'act')(Engine)

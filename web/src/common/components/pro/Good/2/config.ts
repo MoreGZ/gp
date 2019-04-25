@@ -15,7 +15,8 @@ export default {
                 buttonBorderColor2: '#bb9d77',
                 nameColor: '#535353',
                 priceColor: '#b83f3f',
-                bcColor: '#fff'
+                bcColor: '#fff',
+                bindGood: {},
             },
             {
                 name: '商品名称',
@@ -29,7 +30,8 @@ export default {
                 buttonBorderColor2: '#bb9d77',
                 nameColor: '#535353',
                 priceColor: '#b83f3f',
-                bcColor: '#fff'
+                bcColor: '#fff',
+                bindGood: {},
             },
             {
                 name: '商品名称',
@@ -43,7 +45,8 @@ export default {
                 buttonBorderColor2: '#bb9d77',
                 nameColor: '#535353',
                 priceColor: '#b83f3f',
-                bcColor: '#fff'
+                bcColor: '#fff',
+                bindGood: {},
             },
             {
                 name: '商品名称',
@@ -57,7 +60,8 @@ export default {
                 buttonBorderColor2: '#bb9d77',
                 nameColor: '#535353',
                 priceColor: '#b83f3f',
-                bcColor: '#fff'
+                bcColor: '#fff',
+                bindGood: {},
             }
         ]
     }

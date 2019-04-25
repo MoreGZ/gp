@@ -37,7 +37,7 @@ export default class extends React.Component<{}, AppState>{
             isLoading: true
         }, () => {
             UserApi.login(data).then((res) => {
-                message.success('登陆成功')
+                message.success('登录成功')
 
                 location.replace('./manager')
             }).catch((err) => {

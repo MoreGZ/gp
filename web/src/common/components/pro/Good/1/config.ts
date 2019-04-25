@@ -5,7 +5,7 @@ export default {
         float: 'left',
         values: {
             name: '商品名称',
-            coverImg: '',
+            coverImg: '/img/goodPhoto.png',
             desc: '商品描述balabalabala',
             price: 8888,
             activityPrice: 6888,

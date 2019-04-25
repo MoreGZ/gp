@@ -236,7 +236,7 @@ module.exports = class PageService extends Service {
 
         try{
             let config = (await db.query(`select config_edit from page where id=${page_id} `)).results[0].config_edit
-        
+            console.log(config)
             res = this.packege({
                 config: JSON.parse(config)
             })

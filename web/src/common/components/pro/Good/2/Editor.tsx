@@ -8,6 +8,7 @@ import ColorSelect from '../../../ColorSelet'
 const { Item: FormItem } = Form;
 const { TextArea } = Input
 const { SubMenu } = Menu;
+const { Option } = Select;
 
 export default class Container extends React.Component<any, any>{
     state = {
@@ -35,6 +36,23 @@ export default class Container extends React.Component<any, any>{
             onInfoChange(`.info.values.coverImg`, filedir)
         }
     }
+
+    handleSelectBindGood(index: string | number, value: any) {
+        const { goodList, onInfoChange } = this.props
+        
+        let good = _.find(goodList, (good) => good.id == value)
+        good = _.mapValues(good, (item, key) => {
+            return key === 'img' ? JSON.parse(item) : item
+        })
+        onInfoChange(`.info.values.${index}.bindGood`, _.extend({}, good))
+        onInfoChange(`.info.values.${index}.name`, good.name)
+        onInfoChange(`.info.values.${index}.desc`, good.descp)
+        onInfoChange(`.info.values.${index}.activityPrice`, good.min_activity_price)
+
+        if(good.img.length > 0) {
+            onInfoChange(`.info.values.${index}.coverImg`, good.img[0])
+        }
+    }
     
     render() {
         const { onDelete, onInfoChange, moduleInfo, goodList, voucherList, onModuleUp, onModuleDown} = this.props;
@@ -54,7 +72,7 @@ export default class Container extends React.Component<any, any>{
                 </ProModuleWrapper>
 
                 <Drawer
-                    title= '代金券-样式1'
+                    title= '商品-样式2'
                     placement='left'
                     style={{padding: '0px'}}
                     closable={true}
@@ -65,7 +83,7 @@ export default class Container extends React.Component<any, any>{
                     <Menu mode="inline">
                     {
                         _.map(moduleInfo.values, (data, index) => (
-                            <SubMenu title={`代金券${index+1}`} key={index}>
+                            <SubMenu title={`商品${index+1}`} key={index}>
                                 <div style={{marginLeft: '15px'}}>
                                     <FormItem label='图片' style={{marginBottom: '5px'}}>
                                         <Upload action='/upload/img' multiple={false} onChange={(info) => { this.handleUploadChange(info) }}>
@@ -166,6 +184,22 @@ export default class Container extends React.Component<any, any>{
                                             onChange={(e: any) => {onInfoChange(`.info.values.bcColor`, e.target.value)}}
                                             style={{ display: 'inline-block', width: '216px' }}
                                         />
+                                    </FormItem>
+                                </div>
+
+                                <div style={{marginLeft: '15px'}}>
+                                    <FormItem label="绑定商品" style={{marginBottom: '5px'}}>
+                                        <Select
+                                            value={_.get(moduleInfo, `bindGood.name`)} 
+                                            onChange={this.handleSelectBindGood.bind(this, `[${index}]`)}
+                                            style={{ display: 'inline-block', width: '216px' }}
+                                        >
+                                        {
+                                            _.map(goodList, (good, index) => (
+                                                <Option value={good.id} key={index}>{good.name}</Option>
+                                            ))
+                                        }
+                                        </Select>
                                     </FormItem>
                                 </div>
                             </SubMenu>

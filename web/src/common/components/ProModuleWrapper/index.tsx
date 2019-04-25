@@ -8,11 +8,11 @@ export default class ProModuleWrapper extends React.Component<any, any> {
 
         return (
             <div className="module_wrapper">
-            <div onClick={onClick}>
-            {
-                ...this.props.children
-            }
-            </div>
+                <div onClick={onClick}>
+                {
+                    ...this.props.children
+                }
+                </div>
                 <div className='right_top_btns'>
                     <Button shape='circle' onClick={onUp}><Icon type='arrow-up'/></Button>
                     <Button shape='circle' onClick={onDown}><Icon type='arrow-down'/></Button>

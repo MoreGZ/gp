@@ -6,6 +6,7 @@ export default {
         photoWidth: '',
         values: {
             photoUrl: '/img/photo.png',
+            link: undefined
         }
     }
 }

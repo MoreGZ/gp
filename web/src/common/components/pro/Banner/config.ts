@@ -5,7 +5,7 @@ export default {
         values: [
             {
                 img: '/img/banner.png',
-                link: 'javascripts:;'
+                link: 'javascript:;'
             }
         ]
     }

@@ -2,6 +2,10 @@ const Service = require('../libs/Service')
 
 module.exports = class UserService extends Service {
     async login(data) {
+        if(data.username == undefined || data.password == undefined) {
+            return this.packege({}, false, '用户名或者密码不能为空')
+        }
+
         const selectSql = `
             select * from manager
             where username='${data.username}' and password=md5('${data.password}')
