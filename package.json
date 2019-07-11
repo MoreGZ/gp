@@ -7,7 +7,7 @@
     "build": "node ./web/script/build.js",
     "dev-web": "node ./web/script/start.js",
     "dev-server": "NODE_ENV=dev nodemon ./server/app.js",
-    "test": "mocha test/server/controllers/api"
+    "test": "jest ./test/index.test.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "axios": "^0.18.0",
     "chai": "^4.2.0",
     "ejs": "^2.6.1",
+    "jest": "^24.8.0",
     "koa": "^2.7.0",
     "koa-body": "^4.1.0",
     "koa-cors": "0.0.16",
